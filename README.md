@@ -13,5 +13,43 @@ Quickly and easily chain multiple service calls together with the ability to man
 - **Float** (Velocity). java.lang.Float static class
 - **Boolean** (Velocity). java.lang.Boolean static class
 
-# Screenshots
-<img width="1220" alt="Screen Shot 2021-12-16 at 3 20 10 PM" src="https://user-images.githubusercontent.com/5247778/146443643-dbef994f-ffb9-4cfc-820b-c28042140a6d.png">
+Sample Template Transformation
+```
+import java.util.Map;
+
+import dev.anarchy.common.DServiceDefinition;
+import dev.anarchy.translate.runner.BasicServiceChainRunner;
+import dev.anarchy.translate.util.JSONUtils;
+import dev.anarchy.translate.util.TranslateType;
+
+public class SampleApplication {
+	
+	private static final String template = "{\"user\":\"${document.Username}\"}";
+	
+	private static final String data = "{\"Username\":\"Hello\"}";
+	
+	public static void main(String[] args) {
+		
+		System.out.println("Template:\n" + template);
+		System.out.println("Data:\n" + data);
+		
+		// Create Service Definition
+		DServiceDefinition serviceDefinition = new DServiceDefinition();
+		serviceDefinition.setTransformationType(TranslateType.FREEMARKER.getName());
+		serviceDefinition.setTemplateContent(template);
+
+		// Create a runner and test service definition
+		Map<String, Object> output = null;
+		try {
+			BasicServiceChainRunner runner = new BasicServiceChainRunner(null);
+			Map<String, Object> inputPayload = JSONUtils.jsonToMap(data);
+			output = runner.transformSingle(serviceDefinition, inputPayload, false);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		
+		// View output
+		System.out.println("Output:\n" + JSONUtils.mapToJson(output));
+	}
+}
+```
