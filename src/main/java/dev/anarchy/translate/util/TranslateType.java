@@ -4,13 +4,20 @@ import dev.anarchy.translate.type.freemarker.FreemarkerTranslateService;
 import dev.anarchy.translate.type.velocity.VelocityTranslateService;
 
 public enum TranslateType {
-	VELOCITY(VelocityTranslateService.class),
-	FREEMARKER(FreemarkerTranslateService.class);
+	VELOCITY(VelocityTranslateService.class, "Velocity"),
+	FREEMARKER(FreemarkerTranslateService.class, "Freemarker");
 	
 	private Class<?> clazz;
+	
+	private String name;
 
-	TranslateType(Class<?> clazz) {
+	TranslateType(Class<?> clazz, String name) {
 		this.clazz = clazz;
+		this.name = name;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 	
 	public Class<?> getTranslateClass() {
