@@ -8,10 +8,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.runtime.parser.ParseException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.anarchy.common.util.RouteHelper;
 import freemarker.template.TemplateException;
 
+@JsonIgnoreProperties(ignoreUnknown = true) 
 public class DServiceDefinition extends DRouteElement {
 	
 	@JsonProperty("ExtensionhandlerRouteId")

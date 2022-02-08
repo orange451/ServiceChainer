@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +15,7 @@ import dev.anarchy.event.Event;
 import dev.anarchy.event.NameChangeEvent;
 import dev.anarchy.translate.util.JSONUtils;
 
+@JsonIgnoreProperties(ignoreUnknown = true) 
 public class DServiceChain implements DFolderElement,DRouteElementI {
 	
 	@JsonProperty("ExtensionhandlerId")
