@@ -14,7 +14,7 @@ Quickly and easily chain multiple service calls together with the ability to man
 - **Boolean** (Velocity). java.lang.Boolean static class
 
 Sample Template Transformation
-```
+```java
 import java.util.Map;
 
 import dev.anarchy.common.DServiceDefinition;
