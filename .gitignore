@@ -3,5 +3,6 @@ bin/
 .classpath
 .project
 .settings/
+Sample/
 
 APPDATA.json

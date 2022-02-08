@@ -16,12 +16,14 @@ import org.apache.velocity.runtime.parser.ParseException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dev.anarchy.common.DServiceDefinition;
+import dev.anarchy.translate.runner.BasicServiceChainRunner;
+import dev.anarchy.translate.util.JSONUtils;
 import dev.anarchy.translate.util.TranslateMapService;
 import dev.anarchy.translate.util.TranslateType;
 import freemarker.template.TemplateException;
 
 public class Application {
-	private static TranslateMapService translateMapService;
 	private static Scanner scanner;
 	
 	public static void main(String[] args) throws FileNotFoundException {
@@ -63,17 +65,21 @@ public class Application {
 		if ( template == null || dataModel == null ) {
 			System.exit(0);
 		}
+		
+		// Create service definition
+		DServiceDefinition serviceDefinition = new DServiceDefinition();
+		serviceDefinition.setTransformationType(tType.getName());
+		serviceDefinition.setTemplateContent(template);
 
-		// Translate
-		translateMapService = new TranslateMapService();
-		String output = null;
+		// Create a runner and test service definition
+		Map<String, Object> output = null;
 		try {
-			output = translateMapService.translate(tType, template, dataModel);
-		} catch (ParseException | IOException | TemplateException e1) {
-			e1.printStackTrace();
+			BasicServiceChainRunner runner = new BasicServiceChainRunner(null);
+			Map<String, Object> inputPayload = JSONUtils.jsonToMap(dataModel);
+			output = runner.transformSingle(serviceDefinition, inputPayload, false);
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		if ( output == null || "null".equals(output) )
-			output = "Something went wrong. Please see console for error details.";
 		
 		// Write to file
 		String fileName = "Output-" + new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + ".txt";
@@ -84,17 +90,9 @@ public class Application {
 		// Output to user
 		System.out.println("************************************************");
 		System.out.println("Translation output:");
-		System.out.println(output);
+		System.out.println(JSONUtils.mapToJson(output));
 		System.out.println("************************************************");
 		System.out.println("Output written to file: " + new File(fileName).getAbsolutePath());
-		
-		// Check if valid JSON
-		try {
-			new ObjectMapper().readValue(output, Map.class);
-		} catch(Exception e) {
-			System.out.println("WARNING: Output is NOT in valid JSON format. Please verify your template file is correct.");
-			System.out.println(e.toString());
-		}
 		
 		scanner.close();
 	}
