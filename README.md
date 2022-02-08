@@ -13,7 +13,7 @@ Quickly and easily chain multiple service calls together with the ability to man
 - **Float** (Velocity). java.lang.Float static class
 - **Boolean** (Velocity). java.lang.Boolean static class
 
-Sample Template Transformation
+# Sample Template Transformation
 ```java
 import java.util.Map;
 
