@@ -13,6 +13,9 @@ Quickly and easily chain multiple service calls together with the ability to man
 - **Float** (Velocity). java.lang.Float static class
 - **Boolean** (Velocity). java.lang.Boolean static class
 
+# Notes
+To develop service chains with a UI interface, see this project: https://github.com/orange451/ServiceChainerApp
+
 # Sample Template Transformation
 ```java
 import java.util.Map;
