@@ -6,9 +6,11 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import dev.anarchy.event.Event;
 import dev.anarchy.event.NameChangeEvent;
+import dev.anarchy.translate.util.JSONUtils;
 
 public class DFolder implements DFolderElement {
 	@JsonProperty("_Name")
@@ -138,5 +140,20 @@ public class DFolder implements DFolderElement {
 	
 	public DFolder getParent() {
 		return this.parent;
+	}
+	
+	/**
+	 * Performs deep copy on DFolder.
+	 */
+	@Override
+	public DFolder clone() {
+		try {
+			String json = JSONUtils.objectToJSON(this);
+			return JSONUtils.convertToObject(json, this.getClass());
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 }

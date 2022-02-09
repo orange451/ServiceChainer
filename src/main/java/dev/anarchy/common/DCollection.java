@@ -9,4 +9,12 @@ public class DCollection extends DFolder {
 	public DCollection() {
 		super();
 	}
+	
+	/**
+	 * Performs deep copy on DFolder.
+	 */
+	@Override
+	public DCollection clone() {
+		return (DCollection)super.clone();
+	}
 }
