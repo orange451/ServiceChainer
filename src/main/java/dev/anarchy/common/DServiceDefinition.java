@@ -48,6 +48,7 @@ public class DServiceDefinition extends DRouteElement {
 		this.setDesination("ServiceDefinition");
 		
 		this.setPosition(ServiceChainHelper.getDefaultServiceDefinitionX(), ServiceChainHelper.getDefaultServiceDefinitionY());
+		this.setSize(ServiceChainHelper.getDefaultServiceDefinitionWidth(), ServiceChainHelper.getDefaultServiceDefinitionHeight());
 		this.setColor(ServiceChainHelper.getDefaultServiceDefinitionColor());
 	}
 	

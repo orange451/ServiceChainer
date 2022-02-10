@@ -79,6 +79,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		this.setLastInput(ServiceChainHelper.getDefaultServiceChainLastInput());
 		this.setColor(ServiceChainHelper.getDefaultServiceChainColor());
 		this.setPosition(ServiceChainHelper.getDefaultServiceChainElementX(), ServiceChainHelper.getDefaultServiceChainElementY());
+		this.setSize(ServiceChainHelper.getDefaultServiceChainElementWidth(), ServiceChainHelper.getDefaultServiceChainElementHeight());
 	}
 	
 	public String getName() {
