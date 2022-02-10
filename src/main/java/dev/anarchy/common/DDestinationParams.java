@@ -1,7 +1,9 @@
 package dev.anarchy.common;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DDestinationParams {
 
 	@JsonProperty("ParameterName")
