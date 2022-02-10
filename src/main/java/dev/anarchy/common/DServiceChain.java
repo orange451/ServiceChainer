@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.anarchy.event.Event;
 import dev.anarchy.event.NameChangeEvent;
 import dev.anarchy.translate.util.JSONUtils;
+import dev.anarchy.translate.util.ServiceChainHelper;
 
 @JsonIgnoreProperties(ignoreUnknown = true) 
 public class DServiceChain implements DFolderElement,DRouteElementI {
@@ -46,7 +47,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	private double height;
 
 	@JsonProperty("_Color")
-	private String color = "#32A03CFF";
+	private String color;
 
 	@JsonProperty("_LastInput")
 	private String lastInput;
@@ -73,9 +74,11 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	private DFolder parent;
 	
 	public DServiceChain() {
-		this.setName("New Service Chain");
-		this.setHandlerId("Entry Point");
-		this.setLastInput("{}");
+		this.setName(ServiceChainHelper.getDefaultServiceChainName());
+		this.setHandlerId(ServiceChainHelper.getDefaultServiceChainHandlerId());
+		this.setLastInput(ServiceChainHelper.getDefaultServiceChainLastInput());
+		this.setColor(ServiceChainHelper.getDefaultServiceChainColor());
+		this.setPosition(ServiceChainHelper.getDefaultServiceChainElementX(), ServiceChainHelper.getDefaultServiceChainElementY());
 	}
 	
 	public String getName() {

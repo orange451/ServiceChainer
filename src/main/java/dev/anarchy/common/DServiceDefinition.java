@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.anarchy.common.util.RouteHelper;
+import dev.anarchy.translate.util.ServiceChainHelper;
 import freemarker.template.TemplateException;
 
 @JsonIgnoreProperties(ignoreUnknown = true) 
@@ -45,6 +46,9 @@ public class DServiceDefinition extends DRouteElement {
 	public DServiceDefinition() {
 		super();
 		this.setDesination("ServiceDefinition");
+		
+		this.setPosition(ServiceChainHelper.getDefaultServiceDefinitionX(), ServiceChainHelper.getDefaultServiceDefinitionY());
+		this.setColor(ServiceChainHelper.getDefaultServiceDefinitionColor());
 	}
 	
 	public void setExtensionHandlerRouteId(String routeId) {
