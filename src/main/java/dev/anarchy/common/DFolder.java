@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -12,6 +13,7 @@ import dev.anarchy.event.Event;
 import dev.anarchy.event.NameChangeEvent;
 import dev.anarchy.translate.util.JSONUtils;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DFolder implements DFolderElement {
 	@JsonProperty("_Name")
 	private String name;
