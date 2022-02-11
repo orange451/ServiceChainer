@@ -1,5 +1,8 @@
 package dev.anarchy.common;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,6 +31,12 @@ public abstract class DRouteElement implements DRouteElementI {
 	
 	@JsonProperty("DestinationId")
 	private String destinationId;
+	
+	@JsonProperty("ChildRoute")
+	private List<DRouteElement> childRoutes;
+
+	@JsonProperty("Condition")
+	private String condition;
 
 	@JsonProperty("IsSync")
 	private String isSync;
@@ -57,6 +66,7 @@ public abstract class DRouteElement implements DRouteElementI {
 		this.setDesination("RouteElement");
 		this.setDesinationId(UUID.randomUUID().toString());
 		this.setIsSync("true");
+		this.childRoutes = new ArrayList<>();
 	}
 	
 	public void setName(String name) {
@@ -167,6 +177,36 @@ public abstract class DRouteElement implements DRouteElementI {
 		this.isSync = isSync;
 		this.onChangedEvent.fire();
 	}
+	
+	@JsonIgnore()
+	public void setCondition(String condition) {
+		this.condition = condition;
+		this.onChangedEvent.fire();
+	}
+	
+	@JsonIgnore()
+	public String getCondition() {
+		return this.condition;
+	}
+	
+	@JsonIgnore()
+	public List<DRouteElement> getChildRoutesUnmodifyable() {
+		DRouteElement[] arr = new DRouteElement[this.childRoutes.size()];
+		for (int i = 0; i < childRoutes.size(); i++) {
+			arr[i] = childRoutes.get(i);
+		}
+		return Arrays.asList(arr);
+	}
+	
+	@JsonIgnore()
+	public void addChildRoute(DRouteElement element) {
+		this.childRoutes.add(element);
+	}
+	
+	@JsonIgnore()
+	public void removeChildRoute(DRouteElement element) {
+		this.childRoutes.remove(element);
+	}
 
 	public DRouteElement clone() {
 		try {
@@ -177,24 +217,5 @@ public abstract class DRouteElement implements DRouteElementI {
 		}
 		
 		return null;
-		/*DRouteElement newInstance;
-		try {
-			newInstance = this.getClass().newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			return null;
-		}
-		
-		newInstance.source = source;
-		newInstance.sourceId = sourceId;
-		newInstance.destination = destination;
-		newInstance.destinationId = destinationId;
-		newInstance.isSync = isSync;
-		newInstance.x = x;
-		newInstance.y = y;
-		newInstance.width = width;
-		newInstance.height = height;
-		newInstance.name = name;
-		newInstance.color = color;
-		return newInstance;*/
 	}
 }
