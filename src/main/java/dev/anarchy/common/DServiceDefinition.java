@@ -37,6 +37,9 @@ public class DServiceDefinition extends DRouteElement {
 	@JsonProperty("Condition")
 	private String condition;
 	
+	@JsonProperty("Sequence")
+	private int sequence;
+	
 	@JsonProperty("_ConditionMeta")
 	private ConditionMeta conditionMeta;
 	
@@ -153,6 +156,16 @@ public class DServiceDefinition extends DRouteElement {
 	@JsonIgnore()
 	public void setLastInput(String lastInput) {
 		this.lastInput = lastInput;
+	}
+
+	@JsonIgnore()
+	public int getSequence() {
+		return sequence;
+	}
+
+	@JsonIgnore()
+	public void setSequence(int sequence) {
+		this.sequence = sequence;
 	}
 
 	@Override
