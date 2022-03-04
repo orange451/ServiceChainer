@@ -42,11 +42,11 @@ public class SampleApplication {
 		serviceDefinition.setTemplateContent(template);
 
 		// Create a runner and test service definition
+		Map<String, Object> input = JSONUtils.jsonToMap(data);
 		Map<String, Object> output = null;
 		try {
 			BasicServiceChainRunner runner = new BasicServiceChainRunner(null);
-			Map<String, Object> inputPayload = JSONUtils.jsonToMap(data);
-			output = runner.transformSingle(serviceDefinition, inputPayload, false);
+			output = runner.transformSingle(serviceDefinition, input, false);
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
