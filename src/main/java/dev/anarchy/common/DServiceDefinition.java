@@ -10,6 +10,8 @@ import org.apache.velocity.runtime.parser.ParseException;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import dev.anarchy.common.condition.ConditionMeta;
 import dev.anarchy.common.util.RouteHelper;
 import dev.anarchy.translate.util.ServiceChainHelper;
 import freemarker.template.TemplateException;
@@ -35,6 +37,9 @@ public class DServiceDefinition extends DRouteElement {
 	@JsonProperty("Condition")
 	private String condition;
 	
+	@JsonProperty("_ConditionMeta")
+	private ConditionMeta conditionMeta;
+	
 	/** Metadata :: Last known user-supplied response from service definition **/
 	@JsonProperty("_MockResponse")
 	private String mockResponse;
@@ -51,7 +56,8 @@ public class DServiceDefinition extends DRouteElement {
 		this.setSize(ServiceChainHelper.getDefaultServiceDefinitionWidth(), ServiceChainHelper.getDefaultServiceDefinitionHeight());
 		this.setColor(ServiceChainHelper.getDefaultServiceDefinitionColor());
 	}
-	
+
+	@JsonIgnore()
 	public void setExtensionHandlerRouteId(String routeId) {
 		this.routeId = routeId;
 		this.onChangedEvent.fire();
@@ -62,46 +68,56 @@ public class DServiceDefinition extends DRouteElement {
 		return this.routeId;
 	}
 
+	@JsonIgnore()
 	public String getTransformationType() {
 		return transformationType;
 	}
 
+	@JsonIgnore()
 	public void setTransformationType(String transformationType) {
 		this.transformationType = transformationType;
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore()
 	public String getTemplateContent() {
 		return templateContent;
 	}
 
+	@JsonIgnore()
 	public void setTemplateContent(String templateContent) {
 		this.templateContent = templateContent;
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore()
 	public List<DDestinationParams> getDestinationParams() {
 		return destinationParams;
 	}
 
+	@JsonIgnore()
 	public void setDestinationParams(List<DDestinationParams> destinationParams) {
 		this.destinationParams = destinationParams;
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore()
 	public String getAugmentPayload() {
 		return augmentPayload;
 	}
 
+	@JsonIgnore()
 	public void setAugmentPayload(String augmentPayload) {
 		this.augmentPayload = augmentPayload;
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore()
 	public String getCondition() {
 		return condition;
 	}
 
+	@JsonIgnore()
 	public void setCondition(String condition) {
 		this.condition = condition;
 		this.onChangedEvent.fire();
@@ -115,6 +131,17 @@ public class DServiceDefinition extends DRouteElement {
 	@JsonIgnore()
 	public void setMockResponse(String mockResponse) {
 		this.mockResponse = mockResponse;
+		this.onChangedEvent.fire();
+	}
+
+	@JsonIgnore()
+	public ConditionMeta getConditionMeta() {
+		return conditionMeta;
+	}
+
+	@JsonIgnore()
+	public void setConditionMeta(ConditionMeta conditionMeta) {
+		this.conditionMeta = conditionMeta;
 		this.onChangedEvent.fire();
 	}
 
@@ -137,7 +164,8 @@ public class DServiceDefinition extends DRouteElement {
 			return inputPayload;
 		}
 	}
-	
+
+	@JsonIgnore()
 	@Override
 	public DServiceDefinition clone() {
 		DServiceDefinition newInstance = (DServiceDefinition) super.clone();
