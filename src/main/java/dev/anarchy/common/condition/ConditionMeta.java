@@ -12,7 +12,7 @@ public class ConditionMeta extends DGraphElement {
 	@JsonProperty("Condition")
 	private String condition;
 	
-	@JsonProperty("LastConditionPayload")
+	@JsonProperty("_LastConditionPayload")
 	private String lastConditionPayload;
 
 	@JsonIgnore()
