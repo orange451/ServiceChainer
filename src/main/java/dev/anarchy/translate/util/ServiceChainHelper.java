@@ -77,4 +77,8 @@ public class ServiceChainHelper {
 	public static double getDefaultServiceDefinitionHeight() {
 		return 60.0;
 	}
+	
+	public static String getDefaultConditionColor() {
+		return "#FDDA0D";
+	}
 }
