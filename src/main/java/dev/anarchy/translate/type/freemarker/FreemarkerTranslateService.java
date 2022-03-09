@@ -21,25 +21,33 @@ public class FreemarkerTranslateService implements TranslateServiceInterface {
 	
 	private static final String TEMPLATE_NAME = "Template";
 	
-	private static final Map<String, Object> inputMap;
+    private static final StringWriter stringWriter;
 	
 	static {
-		inputMap = new HashMap<>();
-        inputMap.put(JSONUTILS, new JSONUtils());
+        stringWriter = new StringWriter();
 	}
 	
-	@SuppressWarnings("deprecation")
 	public String translate(String templateContent, String dataModel) throws IOException, TemplateException {
 		
         // Convert datamodel into json
         JSONObject jsonModel = (JSONObject) JSONValue.parse(dataModel);
-        inputMap.put(DOCUMENT, jsonModel);
+        
+        // Build context
+        Map<String, Object> context = buildContext(jsonModel);
         
         // Convert template content to template and process
-        StringWriter stringWriter = new StringWriter();
-		Template template = new Template(TEMPLATE_NAME, new StringReader(templateContent));
-        template.process(inputMap, stringWriter);
+        stringWriter.flush();
+		Template template = new Template(TEMPLATE_NAME, new StringReader(templateContent), null);
+        template.process(context, stringWriter);
         
     	return stringWriter.toString();
+	}
+	
+	private Map<String, Object> buildContext(JSONObject jsonModel) {
+		Map<String, Object> inputMap = new HashMap<>();
+        inputMap.put(JSONUTILS, new JSONUtils());
+        inputMap.put(DOCUMENT, jsonModel);
+        
+        return inputMap;
 	}
 }
