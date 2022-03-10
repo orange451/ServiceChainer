@@ -30,8 +30,6 @@ public class VelocityTranslateService implements TranslateServiceInterface {
 	
 	private static final VelocityEngine VELOCITY_ENGINE;
 	
-	private static final StringWriter stringWriter;
-	
 	private static final RuntimeServices runtimeServices;
 	
 	static {
@@ -40,8 +38,6 @@ public class VelocityTranslateService implements TranslateServiceInterface {
 		
 		VELOCITY_ENGINE = new VelocityEngine();
 		VELOCITY_ENGINE.init(VELOCITY_PROPERTIES);
-		
-		stringWriter = new StringWriter();
 
         runtimeServices = RuntimeSingleton.getRuntimeServices();
 	}
@@ -58,7 +54,7 @@ public class VelocityTranslateService implements TranslateServiceInterface {
         Template template = createTemplate(templateContent);
         
         // Run template
-        stringWriter.flush();
+        StringWriter stringWriter = new StringWriter();
         template.merge(context, stringWriter);
         return stringWriter.toString();
 	}

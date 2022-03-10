@@ -21,12 +21,6 @@ public class FreemarkerTranslateService implements TranslateServiceInterface {
 	
 	private static final String TEMPLATE_NAME = "Template";
 	
-    private static final StringWriter stringWriter;
-	
-	static {
-        stringWriter = new StringWriter();
-	}
-	
 	public String translate(String templateContent, String dataModel) throws IOException, TemplateException {
 		
         // Convert datamodel into json
@@ -36,7 +30,7 @@ public class FreemarkerTranslateService implements TranslateServiceInterface {
         Map<String, Object> context = buildContext(jsonModel);
         
         // Convert template content to template and process
-        stringWriter.flush();
+        StringWriter stringWriter = new StringWriter();
 		Template template = new Template(TEMPLATE_NAME, new StringReader(templateContent), null);
         template.process(context, stringWriter);
         
