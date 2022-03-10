@@ -1,6 +1,5 @@
 package dev.anarchy.translate.type.velocity;
 
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Properties;
 
@@ -12,10 +11,11 @@ import org.apache.velocity.runtime.RuntimeServices;
 import org.apache.velocity.runtime.RuntimeSingleton;
 import org.apache.velocity.runtime.parser.ParseException;
 import org.apache.velocity.runtime.parser.node.SimpleNode;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
+import org.apache.velocity.tools.generic.ComparisonDateTool;
 import org.apache.velocity.tools.generic.ConversionTool;
 import org.apache.velocity.tools.generic.DateTool;
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import dev.anarchy.common.dto.Document;
 import dev.anarchy.translate.util.Base64Util;
@@ -93,8 +93,8 @@ public class VelocityTranslateService implements TranslateServiceInterface {
         context.put(Math.class.getSimpleName(), Math.class);
         
         // Velocity Tools
-        context.put(DateTool.class.getSimpleName(), DateTool.class);
-        context.put(ConversionTool.class.getSimpleName(), ConversionTool.class);
+        context.put(DateTool.class.getSimpleName(), new ComparisonDateTool());
+        context.put(ConversionTool.class.getSimpleName(), new ConversionTool());
         context.put(StringUtils.class.getSimpleName(), StringUtils.class);
         
         return context;
