@@ -82,20 +82,24 @@ public class VelocityTranslateService implements TranslateServiceInterface {
         	context.put(DOCUMENT, new Document(jsonModel));
         
         // Custom utils
-        context.put(JSONUtils.class.getSimpleName(), JSONUtils.class);
-        context.put(Base64Util.class.getSimpleName(), Base64Util.class);
+        context.put(JSONUtils.class.getSimpleName(), new JSONUtils());
+        context.put(Base64Util.class.getSimpleName(), new Base64Util());
         
         // Base java Math
-        context.put(Integer.class.getSimpleName(), Integer.class);
-        context.put(Double.class.getSimpleName(), Double.class);
-        context.put(Boolean.class.getSimpleName(), Boolean.class);
-        context.put(Float.class.getSimpleName(), Float.class);
-        context.put(Math.class.getSimpleName(), Math.class);
+        try {
+	        context.put(Integer.class.getSimpleName(), Integer.class.newInstance());
+	        context.put(Double.class.getSimpleName(), Double.class.newInstance());
+	        context.put(Boolean.class.getSimpleName(), Boolean.class.newInstance());
+	        context.put(Float.class.getSimpleName(), Float.class.newInstance());
+	        context.put(Math.class.getSimpleName(), Math.class.newInstance());
+        } catch(Exception e) {
+        	e.printStackTrace();
+        }
         
         // Velocity Tools
         context.put(DateTool.class.getSimpleName(), new ComparisonDateTool());
         context.put(ConversionTool.class.getSimpleName(), new ConversionTool());
-        context.put(StringUtils.class.getSimpleName(), StringUtils.class);
+        context.put(StringUtils.class.getSimpleName(), new StringUtils());
         
         return context;
 	}
