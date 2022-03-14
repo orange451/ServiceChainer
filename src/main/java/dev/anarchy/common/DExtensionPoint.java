@@ -10,6 +10,14 @@ public class DExtensionPoint {
 
 	@JsonProperty("EntryCondition")
 	private String entryCondition;
+	
+	public DExtensionPoint() {
+		this("");
+	}
+	
+	public DExtensionPoint(String extensionPointId) {
+		this.setExtensionPointId(extensionPointId);
+	}
 
 	public String getExtensionPointId() {
 		return extensionPointId;

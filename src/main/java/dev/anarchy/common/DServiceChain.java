@@ -80,6 +80,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		this.setColor(ServiceChainHelper.getDefaultServiceChainColor());
 		this.setPosition(ServiceChainHelper.getDefaultServiceChainElementX(), ServiceChainHelper.getDefaultServiceChainElementY());
 		this.setSize(ServiceChainHelper.getDefaultServiceChainElementWidth(), ServiceChainHelper.getDefaultServiceChainElementHeight());
+		this.getRegisteredExtensionPoints().add(new DExtensionPoint());
 	}
 	
 	public String getName() {
@@ -163,6 +164,11 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 			arr[i] = routes.get(i);
 		}
 		return Arrays.asList(arr);
+	}
+
+	@JsonIgnore
+	public List<DExtensionPoint> getRegisteredExtensionPoints() {
+		return this.extensionPoints;
 	}
 	
 	public void setSize(double width, double height) {

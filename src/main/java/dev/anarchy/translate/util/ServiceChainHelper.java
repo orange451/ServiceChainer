@@ -26,6 +26,12 @@ public class ServiceChainHelper {
 		}
 	}
 	
+	public static void saveServiceChain(DServiceChain serviceChain) {
+		for (DRouteElementI elements : serviceChain.getRoutesUnmodifyable()) {
+			//
+		}
+	}
+	
 	public static String getDefaultServiceChainColor() {
 		return "#32A03CFF";
 	}
