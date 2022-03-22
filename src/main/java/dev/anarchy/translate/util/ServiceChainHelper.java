@@ -69,7 +69,7 @@ public class ServiceChainHelper {
 	}
 	
 	public static double getDefaultServiceDefinitionX() {
-		return 1938.0;
+		return 1940.0;
 	}
 	
 	public static double getDefaultServiceDefinitionY() {
