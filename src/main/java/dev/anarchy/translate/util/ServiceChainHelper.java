@@ -37,11 +37,11 @@ public class ServiceChainHelper {
 	}
 	
 	public static double getDefaultServiceChainElementX() {
-		return 960.0;
+		return 1920;
 	}
 	
 	public static double getDefaultServiceChainElementY() {
-		return 880.0;
+		return 1760;
 	}
 	
 	public static double getDefaultServiceChainElementWidth() {
@@ -69,11 +69,11 @@ public class ServiceChainHelper {
 	}
 	
 	public static double getDefaultServiceDefinitionX() {
-		return 920.0;
+		return 1840.0;
 	}
 	
 	public static double getDefaultServiceDefinitionY() {
-		return 1020.0;
+		return 1900.0;
 	}
 	
 	public static double getDefaultServiceDefinitionWidth() {
