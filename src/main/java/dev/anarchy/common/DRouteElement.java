@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -54,6 +56,9 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 
 	@JsonIgnore()
 	public void setSource(String source) {
+		if ( StringUtils.equals(source, this.source) )
+			return;
+		
 		this.source = source;
 		this.onChangedEvent.fire();
 	}
@@ -66,6 +71,9 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 
 	@JsonIgnore()
 	public void setSourceId(String sourceId) {
+		if ( StringUtils.equals(sourceId, this.sourceId) )
+			return;
+		
 		this.sourceId = sourceId;
 		this.onChangedEvent.fire();
 	}
@@ -78,7 +86,11 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 
 	@JsonIgnore()
 	public void setDesination(String destination) {
+		if ( StringUtils.equals(destination, this.destination) )
+			return;
+		
 		this.destination = destination;
+		this.onChangedEvent.fire();
 		this.setName(destination);
 	}
 
@@ -90,6 +102,9 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 
 	@JsonIgnore()
 	private void setDesinationId(String destinationId) {
+		if ( StringUtils.equals(destinationId, this.destinationId) )
+			return;
+		
 		this.destinationId = destinationId;
 		this.onChangedEvent.fire();
 	}
@@ -107,12 +122,18 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 
 	@JsonIgnore()
 	public void setIsSync(String isSync) {
+		if ( StringUtils.equals(isSync, this.isSync) )
+			return;
+		
 		this.isSync = isSync;
 		this.onChangedEvent.fire();
 	}
 	
 	@JsonIgnore()
 	public void setCondition(String condition) {
+		if ( StringUtils.equals(condition, this.condition) )
+			return;
+		
 		this.condition = condition;
 		this.onChangedEvent.fire();
 	}
