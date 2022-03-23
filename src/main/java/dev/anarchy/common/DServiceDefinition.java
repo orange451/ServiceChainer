@@ -78,6 +78,9 @@ public class DServiceDefinition extends DRouteElement {
 
 	@JsonIgnore()
 	public void setTransformationType(String transformationType) {
+		if ( StringUtils.equals(transformationType, this.transformationType) )
+			return;
+		
 		this.transformationType = transformationType;
 		this.onChangedEvent.fire();
 	}
@@ -89,6 +92,9 @@ public class DServiceDefinition extends DRouteElement {
 
 	@JsonIgnore()
 	public void setTemplateContent(String templateContent) {
+		if ( StringUtils.equals(templateContent, this.templateContent) )
+			return;
+		
 		this.templateContent = templateContent;
 		this.onChangedEvent.fire();
 	}
@@ -111,6 +117,9 @@ public class DServiceDefinition extends DRouteElement {
 
 	@JsonIgnore()
 	public void setAugmentPayload(String augmentPayload) {
+		if ( StringUtils.equals(augmentPayload, this.augmentPayload) )
+			return;
+		
 		this.augmentPayload = augmentPayload;
 		this.onChangedEvent.fire();
 	}
@@ -122,6 +131,9 @@ public class DServiceDefinition extends DRouteElement {
 
 	@JsonIgnore()
 	public void setCondition(String condition) {
+		if ( StringUtils.equals(condition, this.condition) )
+			return;
+		
 		this.condition = condition;
 		this.onChangedEvent.fire();
 	}
@@ -133,6 +145,9 @@ public class DServiceDefinition extends DRouteElement {
 
 	@JsonIgnore()
 	public void setMockResponse(String mockResponse) {
+		if ( StringUtils.equals(mockResponse, this.mockResponse) )
+			return;
+		
 		this.mockResponse = mockResponse;
 		this.onChangedEvent.fire();
 	}

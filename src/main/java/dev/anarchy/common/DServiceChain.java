@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -88,6 +90,9 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	}
 	
 	public void setName(String name) {
+		if ( StringUtils.equals(name, this.name) )
+			return;
+		
 		this.name = name;
 		
 		if ( onNameChangeEvent != null )
@@ -149,6 +154,9 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	}
 	
 	public void setHandlerId(String handlerId) {
+		if ( StringUtils.equals(handlerId, this.handlerId) )
+			return;
+		
 		this.handlerId = handlerId;
 		
 		if ( onHandlerIdChangeEvent != null )
@@ -200,6 +208,9 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	}
 
 	public void setColor(String hexString) {
+		if ( StringUtils.equals(hexString, this.color) )
+			return;
+		
 		this.color = hexString;
 		this.onChangedEvent.fire();
 	}
@@ -243,6 +254,9 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 
 	@JsonIgnore()
 	public void setLastInput(String lastInput) {
+		if ( StringUtils.equals(lastInput, this.lastInput) )
+			return;
+		
 		this.lastInput = lastInput;
 		this.onChangedEvent.fire();
 	}
