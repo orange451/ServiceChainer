@@ -1,5 +1,7 @@
 package dev.anarchy.translate.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import dev.anarchy.common.DRouteElementI;
 import dev.anarchy.common.DServiceChain;
 
@@ -8,13 +10,20 @@ public class ServiceChainHelper {
 	 * Attempt to re-set all the required metadata to display a service chain and its subsequent routes.
 	 */
 	public static void fixServiceChain(DServiceChain serviceChain) {
+		// Setting some metadata
 		serviceChain.setPosition(getDefaultServiceChainElementX(), getDefaultServiceChainElementY());
-		serviceChain.setName(getDefaultServiceChainName());
 		serviceChain.setColor(getDefaultServiceChainColor());
-		serviceChain.setHandlerId(getDefaultServiceChainHandlerId());
 		serviceChain.setLastInput(getDefaultServiceChainLastInput());
 		serviceChain.setSize(getDefaultServiceChainElementWidth(), getDefaultServiceChainElementHeight());
 		
+		// Fix missing required fields
+		if ( StringUtils.isEmpty(serviceChain.getName()) )
+			serviceChain.setName(getDefaultServiceChainName());
+		
+		if ( StringUtils.isEmpty(serviceChain.getHandlerId()) )
+			serviceChain.setHandlerId(getDefaultServiceChainHandlerId());
+		
+		// Layout children
 		int element = 0;
 		for (DRouteElementI route : serviceChain.getRoutesUnmodifyable()) {
 			double spacing = getDefaultServiceDefinitionY() - getDefaultServiceChainElementY();
