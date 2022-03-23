@@ -21,7 +21,7 @@ import dev.anarchy.translate.util.ServiceChainHelper;
 @JsonIgnoreProperties(ignoreUnknown = true) 
 public class DServiceChain implements DFolderElement,DRouteElementI {
 	
-	@JsonProperty("ExtensionhandlerId")
+	@JsonProperty("ExtensionHandlerId")
 	private String handlerId;
 
 	@JsonProperty("ExtensionhandlerRoute")
