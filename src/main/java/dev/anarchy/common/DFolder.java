@@ -39,9 +39,6 @@ public class DFolder implements DFolderElement {
 	@JsonIgnore
 	private Event onParentChangeEvent = new Event();
 	
-	@JsonIgnore
-	private DFolder parent;
-	
 	public DFolder() {
 		this.setName("Folder");
 	}
@@ -127,21 +124,12 @@ public class DFolder implements DFolderElement {
 			
 			if ( chain instanceof DFolder && ((DFolder) chain).isDeletable() )
 				((DFolder)chain).delete();
+			
+			if ( chain instanceof DServiceChain )
+				((DServiceChain)chain).delete();
 		}
 		
 		DApp.get().delete(this);
-	}
-	
-	public void setParent(DFolder parent) {
-		DFolder oldParent = this.parent;
-		this.parent = parent;
-		
-		if ( onParentChangeEvent != null )
-			onParentChangeEvent.fire(parent, oldParent);
-	}
-	
-	public DFolder getParent() {
-		return this.parent;
 	}
 	
 	/**

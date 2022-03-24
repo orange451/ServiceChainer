@@ -289,4 +289,8 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 			e.printStackTrace();
 		}
 	}
+
+	public void delete() {
+		DApp.get().delete(this);
+	}
 }

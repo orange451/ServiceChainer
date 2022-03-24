@@ -26,5 +26,4 @@ public class DApp {
 	public void delete(DFolderElement object) {
 		onDelete.fire(object);
 	}
-
 }
