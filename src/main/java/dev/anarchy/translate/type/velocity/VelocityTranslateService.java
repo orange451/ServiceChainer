@@ -35,6 +35,7 @@ public class VelocityTranslateService implements TranslateServiceInterface {
 	static {
 		VELOCITY_PROPERTIES = new Properties();
 		VELOCITY_PROPERTIES.put("runtime.log.logsystem.class", "org.apache.velocity.runtime.log.NullLogChute");
+		VELOCITY_PROPERTIES.put("runtime.references.strict", "true");
 		
 		VELOCITY_ENGINE = new VelocityEngine();
 		VELOCITY_ENGINE.init(VELOCITY_PROPERTIES);
