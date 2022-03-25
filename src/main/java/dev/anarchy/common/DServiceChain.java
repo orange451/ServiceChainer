@@ -84,11 +84,13 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		this.setSize(ServiceChainHelper.getDefaultServiceChainElementWidth(), ServiceChainHelper.getDefaultServiceChainElementHeight());
 		this.getRegisteredExtensionPoints().add(new DExtensionPoint());
 	}
-	
+
+	@JsonIgnore
 	public String getName() {
 		return this.name;
 	}
-	
+
+	@JsonIgnore
 	public void setName(String name) {
 		if ( StringUtils.equals(name, this.name) )
 			return;
@@ -100,27 +102,33 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		
 		this.onChangedEvent.fire();
 	}
-	
+
+	@JsonIgnore
 	public Event getOnNameChangeEvent() {
 		return this.onNameChangeEvent;
 	}
-	
+
+	@JsonIgnore
 	public Event getOnHandlerIdChangeEvent() {
 		return this.onHandlerIdChangeEvent;
 	}
-	
+
+	@JsonIgnore
 	public Event getOnParentChangeEvent() {
 		return this.onParentChangeEvent;
 	}
-	
+
+	@JsonIgnore
 	public Event getOnRouteAddedEvent() {
 		return this.onRouteAddedEvent;
 	}
-	
+
+	@JsonIgnore	
 	public Event getOnRouteRemovedEvent() {
 		return this.onRouteRemovedEvent;
 	}
-	
+
+	@JsonIgnore
 	public void setParent(DFolder parent) {
 		DFolder oldParent = this.parent;
 		this.parent = parent;
@@ -130,7 +138,8 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		
 		this.onChangedEvent.fire();
 	}
-	
+
+	@JsonIgnore
 	public void addRoute(DRouteElement chain) {
 		if ( this.routes.add(chain) ) {
 			this.onRouteAddedEvent.fire(chain);
@@ -141,18 +150,21 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 			this.onChangedEvent.fire(args);
 		});
 	}
-	
+
+	@JsonIgnore
 	public void removeRoute(DRouteElement chain) {
 		if ( this.routes.remove(chain) ) {
 			this.onRouteRemovedEvent.fire(chain);
 		}
 		this.onChangedEvent.fire();
 	}
-	
+
+	@JsonIgnore
 	public String getHandlerId() {
 		return this.handlerId;
 	}
-	
+
+	@JsonIgnore
 	public void setHandlerId(String handlerId) {
 		if ( StringUtils.equals(handlerId, this.handlerId) )
 			return;
@@ -178,35 +190,42 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	public List<DExtensionPoint> getRegisteredExtensionPoints() {
 		return this.extensionPoints;
 	}
-	
+
+	@JsonIgnore
 	public void setSize(double width, double height) {
 		this.width = width;
 		this.height = height;
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore
 	public void setPosition(double x, double y) {
 		this.x = x;
 		this.y = y;
 		this.onChangedEvent.fire();
 	}
-	
+
+	@JsonIgnore
 	public double getWidth() {
 		return this.width;
 	}
-	
+
+	@JsonIgnore
 	public double getHeight() {
 		return this.height;
 	}
-	
+
+	@JsonIgnore
 	public double getX() {
 		return this.x;
 	}
-	
+
+	@JsonIgnore
 	public double getY() {
 		return this.y;
 	}
 
+	@JsonIgnore
 	public void setColor(String hexString) {
 		if ( StringUtils.equals(hexString, this.color) )
 			return;
@@ -214,11 +233,13 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		this.color = hexString;
 		this.onChangedEvent.fire();
 	}
-	
+
+	@JsonIgnore
 	public String getColor() {
 		return this.color;
 	}
 
+	@JsonIgnore
 	public Event getOnChangedEvent() {
 		return this.onChangedEvent;
 	}
@@ -261,6 +282,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		this.onChangedEvent.fire();
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<String, Object> transform(Map<String, Object> inputPayload) {
 		return inputPayload;
@@ -269,6 +291,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 	/**
 	 * Performs deep copy on DService Chain.
 	 */
+	@JsonIgnore
 	@Override
 	public DServiceChain clone() {
 		try {
@@ -281,6 +304,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		return null;
 	}
 
+	@JsonIgnore
 	public void copyFrom(DServiceChain serviceChain) {
 		try {
 			String json = JSONUtils.objectToJSON(serviceChain);
@@ -290,6 +314,7 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		}
 	}
 
+	@JsonIgnore
 	public void delete() {
 		DApp.get().delete(this);
 	}

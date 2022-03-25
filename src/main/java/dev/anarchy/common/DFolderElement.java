@@ -9,4 +9,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonSubTypes({@Type(DFolder.class), @Type(DServiceChain.class)})
 public interface DFolderElement {
 	public String getName();
+	
+	public void setName(String name);
 }

@@ -42,28 +42,33 @@ public class DFolder implements DFolderElement {
 	public DFolder() {
 		this.setName("Folder");
 	}
-	
+
+	@JsonIgnore
 	public String getName() {
 		return this.name;
 	}
-	
+
+	@JsonIgnore
 	public void setName(String name) {
 		this.name = name;
 		this.onNameChangeEvent.fire(name);
 	}
-	
+
+	@JsonIgnore
 	public void addChild(DFolderElement chain) {
 		if ( this.children.add(chain) ) {
 			this.onChildAddedEvent.fire(chain);
 		}
 	}
-	
+
+	@JsonIgnore
 	public void removeChild(DFolderElement chain) {
 		if ( this.children.remove(chain) ) {
 			this.onChildRemovedEvent.fire(chain);
 		}
 	}
 
+	@JsonIgnore
 	public DFolderElement getChild(String name) {
 		for (DFolderElement chain : this.children)
 			if ( chain.getName().equals(name) )
@@ -80,35 +85,43 @@ public class DFolder implements DFolderElement {
 		}
 		return Arrays.asList(arr);
 	}
-	
+
+	@JsonIgnore
 	public Event getOnChildAddedEvent() {
 		return this.onChildAddedEvent;
 	}
-	
+
+	@JsonIgnore
 	public Event getOnChildRemovedEvent() {
 		return this.onChildRemovedEvent;
 	}
-	
+
+	@JsonIgnore
 	public NameChangeEvent getOnNameChangeEvent() {
 		return this.onNameChangeEvent;
 	}
-	
+
+	@JsonIgnore
 	public boolean isArchivable() {
 		return this.archivable;
 	}
-	
+
+	@JsonIgnore
 	public void setArchivable(boolean archivable) {
 		this.archivable = archivable;
 	}
-	
+
+	@JsonIgnore
 	public boolean isDeletable() {
 		return this.deletable;
 	}
-	
+
+	@JsonIgnore
 	public void setDeletable(boolean deletable) {
 		this.deletable = deletable;
 	}
 
+	@JsonIgnore
 	public void delete() {
 		if ( !this.isDeletable() )
 			return;

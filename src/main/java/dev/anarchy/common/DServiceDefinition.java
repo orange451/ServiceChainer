@@ -183,6 +183,7 @@ public class DServiceDefinition extends DRouteElement {
 		this.sequence = sequence;
 	}
 
+	@JsonIgnore
 	@Override
 	public Map<String, Object> transform(Map<String, Object> inputPayload) throws ParseException, IOException, TemplateException {
 		// Try to transform the data
