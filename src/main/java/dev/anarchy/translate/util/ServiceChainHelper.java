@@ -82,7 +82,7 @@ public class ServiceChainHelper {
 	}
 	
 	public static double getDefaultServiceDefinitionY() {
-		return 1940.0;
+		return 1900.0;
 	}
 	
 	public static double getDefaultServiceDefinitionWidth() {
