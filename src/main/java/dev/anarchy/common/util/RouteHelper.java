@@ -52,7 +52,8 @@ public class RouteHelper {
 	}
 
 	/**
-	 * Return a route element that is linked TO this source element. Two elements are linked when the sources destination matches the destinations source.
+	 * Return a route element that is linked TO this source element.
+	 * Two elements are linked when the sources destination matches the destinations source.
 	 */
 	public static DRouteElementI getLinkedTo(List<DRouteElementI> allRoutes, DRouteElementI source) {
 		for (DRouteElementI element : allRoutes) {
@@ -60,6 +61,23 @@ public class RouteHelper {
 				continue;
 			
 			if ( element.getSourceId() != null && element.getSourceId().equals(source.getDestinationId()) ) {
+				return element;
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * Return a route element that is linked FROM this source element.
+	 * Two elements are linked when the sources destination matches the destinations source.
+	 */
+	public static DRouteElementI getLinkedFrom(List<DRouteElementI> allRoutes, DRouteElementI destination) {
+		for (DRouteElementI element : allRoutes) {
+			if ( element == destination )
+				continue;
+			
+			if ( element.getDestinationId() != null && element.getDestinationId().equals(destination.getSourceId()) ) {
 				return element;
 			}
 		}
