@@ -15,6 +15,9 @@ public class ConditionMeta extends DGraphElement {
 	@JsonProperty("_LastConditionPayload")
 	private String lastConditionPayload;
 
+	@JsonProperty("_LinkedToId")
+	private String linkedToId;
+
 	@JsonIgnore()
 	public String getCondition() {
 		return condition;
@@ -34,6 +37,17 @@ public class ConditionMeta extends DGraphElement {
 	@JsonIgnore()
 	public void setLastConditionPayload(String lastConditionPayload) {
 		this.lastConditionPayload = lastConditionPayload;
+		this.onChangedEvent.fire();
+	}
+
+	@JsonIgnore()
+	public String getLinkedToId() {
+		return linkedToId;
+	}
+
+	@JsonIgnore()
+	public void setLinkedToId(String linkedToId) {
+		this.linkedToId = linkedToId;
 		this.onChangedEvent.fire();
 	}
 }
