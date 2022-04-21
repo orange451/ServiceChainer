@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dev.anarchy.common.DCollection;
+import dev.anarchy.common.DConditionElement;
 import dev.anarchy.common.DFolder;
 import dev.anarchy.common.DFolderElement;
 import dev.anarchy.common.DRouteElement;
@@ -124,7 +125,7 @@ public class RouteHelper {
         
         // Add service chains to collection
         for (DServiceChain chain : serviceChains)
-        	collection.addChild(chain);
+        	collection.addChild(compact(chain.clone()));
 
         // Write to file
         if (outputFile != null) {
@@ -141,6 +142,28 @@ public class RouteHelper {
             }
         }
 	}
+
+	/**
+	 * Pack condition nodes in to destination node
+	 */
+	private static DServiceChain compact(DServiceChain serviceChain) {
+		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
+		for (int i = 0; i < routes.size(); i++) {
+			DRouteElementI currentRoute = routes.get(i);
+			DRouteElementI nextRoute = i < routes.size() - 1 ? routes.get(i+1) : null;
+			DRouteElementI prevRoute = i > 0 ? routes.get(i-1) : serviceChain;
+			
+			if ( currentRoute instanceof DConditionElement ) {
+				if ( nextRoute == null || prevRoute == null )
+					continue;
+				
+				linkRoutes(prevRoute, (DRouteElement) nextRoute);
+				routes.remove(i--);
+			}
+		}
+		return serviceChain;
+	}
+
 
 	/**
 	 * Perform additional processing on export json. This involves stripping metadata if requested, and prettifying.
