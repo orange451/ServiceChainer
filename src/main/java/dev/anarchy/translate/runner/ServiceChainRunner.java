@@ -67,6 +67,8 @@ public abstract class ServiceChainRunner {
 				// Condition
 				passedCondition = handleCondition(routes, inputPayload, currentElement);
 				
+				System.err.println(currentElement + " :: Condition status: " + passedCondition);
+				
 				// Augment maybe
 				if ( currentElement instanceof DServiceDefinition && !StringUtils.isEmpty(((DServiceDefinition)currentElement).getAugmentPayload()) ) {
 					inputPayload.put(((DServiceDefinition)currentElement).getAugmentPayload(), output);
