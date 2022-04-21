@@ -77,17 +77,19 @@ public class RouteHelper {
 	 * Return a route element that is linked TO this source element.
 	 * Two elements are linked when the sources destination matches the destinations source.
 	 */
-	public static DRouteElementI getLinkedTo(List<DRouteElementI> allRoutes, DRouteElementI source) {
+	public static List<DRouteElementI> getLinkedTo(List<DRouteElementI> allRoutes, DRouteElementI source) {
+		List<DRouteElementI> routes = new ArrayList<>();
+		
 		for (DRouteElementI element : allRoutes) {
 			if ( element == source )
 				continue;
 			
 			if ( element.getSourceId() != null && element.getSourceId().equals(source.getDestinationId()) ) {
-				return element;
+				routes.add(element);
 			}
 		}
 		
-		return null;
+		return routes;
 	}
 
 	/**
@@ -162,15 +164,21 @@ public class RouteHelper {
 	 * Returns the specified service chain after unpacking conditions in to their own elements.
 	 */
 	public static DServiceChain unpack(DServiceChain serviceChain) {
-		double SPACING = 40;
 		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
-		DRouteElementI currentElement = serviceChain;
-		DRouteElementI prevElement = currentElement;
+		unpack(serviceChain, routes, serviceChain);
+		
+		return serviceChain;
+	}
+	
+	/**
+	 * Returns the specified service chain after unpacking conditions in to their own elements.
+	 */
+	private static void unpack(DServiceChain serviceChain, List<DRouteElementI> routes, DRouteElementI rootRoute) {
+		double SPACING = 40;
 		double yOff = 0;
-		while(currentElement != null) {
-			currentElement = RouteHelper.getLinkedTo(routes, currentElement);
-			if ( currentElement == null )
-				break;
+		
+		List<DRouteElementI> availableNextRoutes = RouteHelper.getLinkedTo(routes, rootRoute);
+		for (DRouteElementI currentElement : availableNextRoutes) {
 			
 			if (currentElement instanceof DServiceDefinition) {
 				if (!StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
@@ -178,22 +186,74 @@ public class RouteHelper {
 					condition.setPosition(currentElement.getX(), currentElement.getY());
 					condition.setCondition(((DServiceDefinition) currentElement).getCondition());
 					
+					RouteHelper.linkRoutes(routes, rootRoute, condition);
+					RouteHelper.linkRoutes(routes, condition, (DRouteElement) currentElement);
 					
-					RouteHelper.linkRoutes(serviceChain.getRoutesUnmodifyable(), prevElement, condition);
-					RouteHelper.linkRoutes(serviceChain.getRoutesUnmodifyable(), condition, (DRouteElement) currentElement);
+					updateFailNode(routes, condition, rootRoute);
 					
 					((DServiceDefinition) currentElement).setCondition(null);
 					yOff += condition.getHeight() + SPACING;
+				} else {
+					DConditionElement condition = null;
+					for (DRouteElementI t : RouteHelper.getLinkedTo(serviceChain.getRoutesUnmodifyable(), rootRoute)) {
+						if ( t == currentElement ) 
+							continue;
+						
+						if ( t instanceof DConditionElement ) {
+							condition = (DConditionElement) t;
+							break;
+						}
+					}
+					if ( condition != null )
+						updateFailNode(routes, condition, rootRoute);
 				}
 			}
 
 			currentElement.setPosition(currentElement.getX(), currentElement.getY() + yOff);
-			prevElement = currentElement;
+			
+			unpack(serviceChain, routes, currentElement);
 		}
-		
-		return serviceChain;
 	}
 	
+	private static void updateFailNode(List<DRouteElementI> routes, DConditionElement condition, DRouteElementI rootRoute) {
+		for (DRouteElementI t : RouteHelper.getLinkedTo(routes, rootRoute)) {
+			if ( t instanceof DConditionElement ) {
+				continue;
+			}
+
+			condition.setFailDesination(t.getDestination());
+			condition.setFailDesinationId(t.getDestinationId());
+			
+			if ( t instanceof DServiceDefinition ) {
+				((DServiceDefinition)t).setSource(condition.getDestination());
+				((DServiceDefinition)t).setSourceId(condition.getDestinationId());
+			}
+		}
+	}
+	
+	public static void disconnectCondition(List<DRouteElementI> routes, DConditionElement element) {
+		for (DRouteElementI t : RouteHelper.getLinkedTo(routes, element)) {
+			if ( t instanceof DServiceDefinition ) {
+				((DServiceDefinition)t).setSource(null);
+				((DServiceDefinition)t).setSourceId(null);
+			}
+		}
+		
+		element.setFailDesination(null);
+		element.setFailDesinationId(null);
+	}
+	
+	public static void connectCondition(DConditionElement condition, DRouteElement element, boolean passNode) {
+		element.setSource(condition.getDestination());
+		element.setSourceId(condition.getDestinationId());
+		
+		if ( !passNode ) {
+			condition.setFailDesination(element.getDestination());
+			condition.setFailDesinationId(element.getDestinationId());
+		}
+	}
+
+
 	/**
 	 * Instantiate new condition node
 	 */
@@ -322,6 +382,7 @@ public class RouteHelper {
 			}
 		}
 		
-		return getLinkedTo(routes, currentElement);
+		List<DRouteElementI> nextRoutes = getLinkedTo(routes, currentElement);
+		return nextRoutes.size() > 0 ? nextRoutes.get(0) : null;
 	}
 }

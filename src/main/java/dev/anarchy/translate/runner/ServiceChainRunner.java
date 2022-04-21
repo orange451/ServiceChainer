@@ -73,7 +73,7 @@ public abstract class ServiceChainRunner {
 				} else {
 					inputPayload = output;
 				}
-			} catch (Exception e) {
+			} catch (Exception e) { 
 				exception = new ServiceChainRunnerException(e, currentElement);
 			}
 			
