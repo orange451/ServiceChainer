@@ -33,25 +33,35 @@ import freemarker.template.TemplateException;
 public class RouteHelper {
 
 	/**
-	 * Given a list of route elements, link a source element to a destination element.
+	 * Given a list of route elements, link a source element to a destination element. This will clear any previously connected routes.
 	 */
 	public static void linkRoutes(List<DRouteElementI> allRoutes, DRouteElementI source, DRouteElement destination) {
+		// Unlink anything source is connected to
+		unlinkRoutes(allRoutes, source);
+		
+		// Link new destination
+		linkRoutes(source, destination);
+	}
+	
+	/**
+	 * Unlink all routes connected TO the specified parent route.
+	 */
+	public static void unlinkRoutes(List<DRouteElementI> allRoutes, DRouteElementI parent) {
 		// Unlink anything source is connected to
 		for (DRouteElementI element : allRoutes) {
 			if ( !(element instanceof DRouteElement) )
 				continue;
 			
-			if ( element.getSourceId() != null && element.getSourceId().equals(source.getDestinationId()) ) {
+			if ( element.getSourceId() != null && element.getSourceId().equals(parent.getDestinationId()) ) {
 				((DRouteElement)element).setSource(null);
 				((DRouteElement)element).setSourceId(null);
 			}
 		}
-		
-		// Link new destination
-		linkRoutes(source, destination);
 	}
 
-	
+	/**
+	 * Link two routes together.
+	 */
 	public static void linkRoutes(DRouteElementI source, DRouteElement destination) {
 		if ( destination == null )
 			return;
@@ -276,34 +286,37 @@ public class RouteHelper {
 	private static DServiceChain compact(DServiceChain serviceChain) {
 		List<DRouteElement> newRoutes = new ArrayList<DRouteElement>();
 		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
-		DRouteElementI previousRoute = serviceChain;
-		for (int i = 0; i < routes.size(); i++) {
-			DRouteElementI currentRoute = routes.get(i);
-			DRouteElementI nextRoute = i < routes.size() - 1 ? routes.get(i+1) : null;
-			
-			if ( !(currentRoute instanceof DRouteElement) )
-				continue;
-			
-			if ( currentRoute instanceof DConditionElement ) {
-				if ( nextRoute == null || previousRoute == null )
-					continue;
-				
-				linkRoutes(previousRoute, (DRouteElement) nextRoute);
-				
-				if ( nextRoute instanceof DServiceDefinition ) {
-					((DServiceDefinition)nextRoute).setCondition(((DConditionElement) currentRoute).getCondition());
-				}
-				
-				continue;
-			}
-
-			previousRoute = currentRoute;
-			newRoutes.add((DRouteElement) currentRoute);
-		}
+		
+		compact(newRoutes, routes, serviceChain, serviceChain);
+		
 		serviceChain.setRoutes(newRoutes);
 		return serviceChain;
 	}
 
+	/**
+	 * Delete DConditionElement, and pack them in to child node
+	 */
+	private static void compact(List<DRouteElement> newRoutes, List<DRouteElementI> allRoutes, DRouteElementI currentRoute, DRouteElementI previousRoute) {
+		List<DRouteElementI> connectedRoutes = RouteHelper.getLinkedTo(allRoutes, currentRoute);
+		if ( currentRoute instanceof DConditionElement ) {
+			for (DRouteElementI nextRoute : connectedRoutes) {
+				linkRoutes(previousRoute, (DRouteElement) nextRoute);
+				
+				// Mark the pass route condition
+				if ( nextRoute instanceof DServiceDefinition && nextRoute.getDestinationId().equals(((DConditionElement) currentRoute).getPassRouteId())) {
+					((DServiceDefinition)nextRoute).setCondition(((DConditionElement) currentRoute).getCondition());
+				}
+			}
+		} else {
+			if ( currentRoute instanceof DRouteElement )
+				newRoutes.add((DRouteElement) currentRoute);
+		}
+		
+		for (DRouteElementI element : connectedRoutes) {
+			if ( element instanceof DRouteElement )
+				compact(newRoutes, allRoutes, (DRouteElement) element, currentRoute);
+		}
+	}
 
 	/**
 	 * Perform additional processing on export json. This involves stripping metadata if requested, and prettifying.
