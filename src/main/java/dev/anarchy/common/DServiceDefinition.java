@@ -17,7 +17,7 @@ import dev.anarchy.translate.util.ServiceChainHelper;
 import freemarker.template.TemplateException;
 
 @JsonIgnoreProperties(ignoreUnknown = true) 
-public class DServiceDefinition extends DRouteElement {
+public class DServiceDefinition extends DRouteElement implements DConditionMetaElement {
 	
 	@JsonProperty("ExtensionhandlerRouteId")
 	private String routeId;
