@@ -94,7 +94,7 @@ public abstract class ServiceChainRunner {
 			return condition.evaluate(inputPayload);
 		}
 		
-		if ( currentElement instanceof DServiceDefinition && StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
+		if ( currentElement instanceof DServiceDefinition && !StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
 			Condition condition = new Condition(((DServiceDefinition)currentElement).getCondition());
 			return condition.evaluate(inputPayload);
 		}
