@@ -162,6 +162,11 @@ public class RouteHelper {
 					continue;
 				
 				linkRoutes(previousRoute, (DRouteElement) nextRoute);
+				
+				if ( nextRoute instanceof DServiceDefinition ) {
+					((DServiceDefinition)nextRoute).setCondition(((DConditionElement) currentRoute).getCondition());
+				}
+				
 				continue;
 			}
 
