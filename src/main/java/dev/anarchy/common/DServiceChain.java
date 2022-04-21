@@ -186,6 +186,12 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		return Arrays.asList(arr);
 	}
 
+	@JsonIgnore	
+	public void setRoutes(List<DRouteElement> routes) {
+		this.routes = routes;
+		this.onChangedEvent.fire();
+	}
+
 	@JsonIgnore
 	public List<DExtensionPoint> getRegisteredExtensionPoints() {
 		return this.extensionPoints;

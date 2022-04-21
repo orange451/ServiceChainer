@@ -147,11 +147,15 @@ public class RouteHelper {
 	 * Pack condition nodes in to destination node
 	 */
 	private static DServiceChain compact(DServiceChain serviceChain) {
+		List<DRouteElement> newRoutes = new ArrayList<DRouteElement>();
 		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
 		for (int i = 0; i < routes.size(); i++) {
 			DRouteElementI currentRoute = routes.get(i);
 			DRouteElementI nextRoute = i < routes.size() - 1 ? routes.get(i+1) : null;
 			DRouteElementI prevRoute = i > 0 ? routes.get(i-1) : serviceChain;
+			
+			if ( !(currentRoute instanceof DRouteElement) )
+				continue;
 			
 			if ( currentRoute instanceof DConditionElement ) {
 				if ( nextRoute == null || prevRoute == null )
@@ -159,8 +163,12 @@ public class RouteHelper {
 				
 				linkRoutes(prevRoute, (DRouteElement) nextRoute);
 				routes.remove(i--);
+				continue;
 			}
+
+			newRoutes.add((DRouteElement) currentRoute);
 		}
+		serviceChain.setRoutes(newRoutes);
 		return serviceChain;
 	}
 
