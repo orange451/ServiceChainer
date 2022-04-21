@@ -19,7 +19,7 @@ import dev.anarchy.event.Event;
 import dev.anarchy.translate.util.JSONUtils;
 
 @JsonTypeInfo(use=Id.DEDUCTION)
-@JsonSubTypes({@Type(DServiceDefinition.class)})
+@JsonSubTypes({@Type(DServiceDefinition.class),@Type(DConditionElement.class)})
 public abstract class DRouteElement extends DGraphElement implements DRouteElementI {
 	
 	@JsonProperty("Source")
