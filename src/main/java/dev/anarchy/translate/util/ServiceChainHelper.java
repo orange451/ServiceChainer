@@ -1,11 +1,20 @@
 package dev.anarchy.translate.util;
 
+import java.util.List;
+
 import org.apache.commons.lang3.StringUtils;
 
+import dev.anarchy.common.DConditionElement;
 import dev.anarchy.common.DRouteElementI;
 import dev.anarchy.common.DServiceChain;
+import dev.anarchy.common.DServiceDefinition;
+import dev.anarchy.common.util.RouteHelper;
 
 public class ServiceChainHelper {
+	private static final double HORIZONTAL_ELEMENT_SPACE = 40;
+	
+	private static final double VERTICAL_ELEMENT_SPACE = 60;
+	
 	/**
 	 * Attempt to re-set all the required metadata to display a service chain and its subsequent routes.
 	 */
@@ -23,16 +32,72 @@ public class ServiceChainHelper {
 		if ( StringUtils.isEmpty(serviceChain.getHandlerId()) )
 			serviceChain.setHandlerId(getDefaultServiceChainHandlerId());
 		
-		// Layout children
-		int element = 0;
+		// Apply Metadata to children
 		for (DRouteElementI route : serviceChain.getRoutesUnmodifyable()) {
-			double spacing = getDefaultServiceDefinitionY() - getDefaultServiceChainElementY();
-			route.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY() + (spacing*element));
-			route.setSize(getDefaultServiceDefinitionWidth(), getDefaultServiceDefinitionHeight());
-			route.setColor(getDefaultServiceDefinitionColor());
-			route.setName(route.getDestination());
-			element = element + 1;
+			if ( route instanceof DServiceDefinition ) {
+				fixServiceDefinition((DServiceDefinition) route);
+			}
+			
+			if ( route instanceof DConditionElement ) {
+				fixCondition((DConditionElement) route);
+			}
 		}
+		
+		// Layout Children
+		layout(serviceChain.getRoutesUnmodifyable(), serviceChain);
+	}
+	
+	private static void layout(List<DRouteElementI> routes, DRouteElementI route) {
+		List<DRouteElementI> childRoutes = RouteHelper.getLinkedTo(routes, route);
+		double totalWidth = 0;
+		double maxHeight = 0;
+		
+		// Compute size
+		for (DRouteElementI element : childRoutes) {
+			totalWidth += element.getWidth();
+			maxHeight = Math.max(maxHeight, element.getHeight());
+		}
+		totalWidth += (childRoutes.size()-1) * HORIZONTAL_ELEMENT_SPACE;
+		
+		double centerX = route.getX() + route.getWidth()/2;
+		double bottomY = route.getY() + route.getHeight();
+		
+		// Layout
+		int pushWidth = 0;
+		for (DRouteElementI element : childRoutes) {
+			double xx = centerX - (totalWidth/2) + pushWidth;
+			double yy = bottomY + VERTICAL_ELEMENT_SPACE;
+			element.setPosition(xx, yy);
+			
+			layout(routes, element);
+			pushWidth += element.getWidth() + HORIZONTAL_ELEMENT_SPACE;
+		}
+	}
+
+	private static void fixServiceDefinition(DServiceDefinition serviceDefinition) {
+		serviceDefinition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
+		serviceDefinition.setSize(getDefaultServiceDefinitionWidth(), getDefaultServiceDefinitionHeight());
+		serviceDefinition.setColor(getDefaultServiceDefinitionColor());
+		if ( StringUtils.isEmpty(serviceDefinition.getName()) )
+			serviceDefinition.setName(serviceDefinition.getDestination());
+	}
+	
+	private static void fixCondition(DConditionElement condition) {
+		condition.setName("Condition");
+		condition.setColor(ServiceChainHelper.getDefaultConditionElementColor());
+		condition.setSize(getDefaultConditionElementWidth(), getDefaultConditionElementHeight());
+		condition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
+	}
+
+
+	/**
+	 * Instantiate new condition node
+	 */
+	public static DConditionElement newCondition(DServiceChain serviceChain) {
+		DConditionElement condition = new DConditionElement();
+		fixCondition(condition);
+		serviceChain.addRoute(condition);
+		return condition;
 	}
 	
 	public static void saveServiceChain(DServiceChain serviceChain) {
@@ -93,7 +158,15 @@ public class ServiceChainHelper {
 		return 60.0;
 	}
 	
-	public static String getDefaultConditionColor() {
+	public static double getDefaultConditionElementWidth() {
+		return 100;
+	}
+	
+	public static double getDefaultConditionElementHeight() {
+		return 100;
+	}
+	
+	public static String getDefaultConditionElementColor() {
 		return "#FDDA0D";
 	}
 }

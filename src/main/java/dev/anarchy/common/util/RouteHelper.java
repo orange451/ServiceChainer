@@ -192,7 +192,7 @@ public class RouteHelper {
 			
 			if (currentElement instanceof DServiceDefinition) {
 				if (!StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
-					DConditionElement condition = newCondition(serviceChain);
+					DConditionElement condition = ServiceChainHelper.newCondition(serviceChain);
 					condition.setPosition(currentElement.getX(), currentElement.getY());
 					condition.setCondition(((DServiceDefinition) currentElement).getCondition());
 					
@@ -262,22 +262,6 @@ public class RouteHelper {
 		} else {
 			condition.setFailRouteId(element.getDestinationId());
 		}
-	}
-
-
-	/**
-	 * Instantiate new condition node
-	 */
-	public static DConditionElement newCondition(DServiceChain serviceChain) {
-		DConditionElement condition = new DConditionElement();
-		condition.setName("Condition");
-		condition.setColor(ServiceChainHelper.getDefaultConditionColor());
-		condition.setSize(100, 100);
-		double x = ServiceChainHelper.getDefaultServiceDefinitionX();
-		double y = ServiceChainHelper.getDefaultServiceDefinitionY();
-		condition.setPosition(x, y);
-		serviceChain.addRoute(condition);
-		return condition;
 	}
 
 	/**
