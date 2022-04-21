@@ -374,6 +374,8 @@ public class RouteHelper {
 		if ( currentElement instanceof DConditionElement ) {
 			if ( !passedCondition ) {
 				return getRoute(routes, ((DConditionElement) currentElement).getFailRouteId());
+			} else {
+				return getRoute(routes, ((DConditionElement) currentElement).getPassRouteId());
 			}
 		}
 		
