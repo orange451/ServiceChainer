@@ -189,6 +189,7 @@ public class RouteHelper {
 					RouteHelper.linkRoutes(routes, rootRoute, condition);
 					RouteHelper.linkRoutes(routes, condition, (DRouteElement) currentElement);
 					
+					connectCondition(condition, (DRouteElement) currentElement, true);
 					updateFailNode(routes, condition, rootRoute);
 					
 					((DServiceDefinition) currentElement).setCondition(null);
