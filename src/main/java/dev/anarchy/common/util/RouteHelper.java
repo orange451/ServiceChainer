@@ -45,12 +45,18 @@ public class RouteHelper {
 		}
 		
 		// Link new destination
-		if ( destination != null ) {
-			destination.setSource(source.getDestination());
-			destination.setSourceId(source.getDestinationId());
-		}
+		linkRoutes(source, destination);
 	}
 
+	
+	public static void linkRoutes(DRouteElementI source, DRouteElement destination) {
+		if ( destination == null )
+			return;
+		
+		destination.setSource(source.getDestination());
+		destination.setSourceId(source.getDestinationId());
+	}
+	
 	/**
 	 * Return a route element that is linked TO this source element.
 	 * Two elements are linked when the sources destination matches the destinations source.
