@@ -221,8 +221,7 @@ public class RouteHelper {
 				continue;
 			}
 
-			condition.setFailDesination(t.getDestination());
-			condition.setFailDesinationId(t.getDestinationId());
+			condition.setFailRouteId(t.getDestinationId());
 			
 			if ( t instanceof DServiceDefinition ) {
 				((DServiceDefinition)t).setSource(condition.getDestination());
@@ -239,17 +238,18 @@ public class RouteHelper {
 			}
 		}
 		
-		element.setFailDesination(null);
-		element.setFailDesinationId(null);
+		element.setPassRouteId(null);
+		element.setFailRouteId(null);
 	}
 	
 	public static void connectCondition(DConditionElement condition, DRouteElement element, boolean passNode) {
 		element.setSource(condition.getDestination());
 		element.setSourceId(condition.getDestinationId());
 		
-		if ( !passNode ) {
-			condition.setFailDesination(element.getDestination());
-			condition.setFailDesinationId(element.getDestinationId());
+		if ( passNode ) {
+			condition.setPassRouteId(element.getDestination());
+		} else {
+			condition.setFailRouteId(element.getDestinationId());
 		}
 	}
 
@@ -372,7 +372,7 @@ public class RouteHelper {
 	public static DRouteElementI getNextRoute(List<DRouteElementI> routes, DRouteElementI currentElement, boolean passedCondition) {
 		if ( currentElement instanceof DConditionElement ) {
 			if ( !passedCondition ) {
-				return getRoute(routes, ((DConditionElement) currentElement).getFailDestinationId());
+				return getRoute(routes, ((DConditionElement) currentElement).getFailRouteId());
 			}
 		}
 		

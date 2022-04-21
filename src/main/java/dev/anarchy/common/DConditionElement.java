@@ -16,11 +16,11 @@ public class DConditionElement extends DRouteElement implements DConditionMetaEl
 	
 	@JsonProperty("_ConditionMeta")
 	private ConditionMeta conditionMeta;
-
-	@JsonProperty("FailDestination")
-	private String failDestination;
 	
-	@JsonProperty("FailDestinationId")
+	@JsonProperty("PassRouteId")
+	private String passDestinationId;
+	
+	@JsonProperty("FailRouteId")
 	private String failDestinationId;
 	
 	public DConditionElement() {
@@ -45,22 +45,21 @@ public class DConditionElement extends DRouteElement implements DConditionMetaEl
 	}
 
 	@JsonIgnore()
-	public void setFailDesination(String destination) {
-		if ( StringUtils.equals(destination, this.failDestination) )
+	public void setPassRouteId(String destination) {
+		if ( StringUtils.equals(destination, this.passDestinationId) )
 			return;
 		
-		this.failDestination = destination;
+		this.passDestinationId = destination;
 		this.onChangedEvent.fire();
-		this.setName(destination);
 	}
 
 	@JsonIgnore()
-	public String getFailDestination() {
-		return this.failDestination;
+	public String getPassRouteId() {
+		return this.passDestinationId;
 	}
 
 	@JsonIgnore()
-	public void setFailDesinationId(String destinationId) {
+	public void setFailRouteId(String destinationId) {
 		if ( StringUtils.equals(destinationId, this.failDestinationId) )
 			return;
 		
@@ -69,7 +68,7 @@ public class DConditionElement extends DRouteElement implements DConditionMetaEl
 	}
 
 	@JsonIgnore()
-	public String getFailDestinationId() {
+	public String getFailRouteId() {
 		return this.failDestinationId;
 	}
 }
