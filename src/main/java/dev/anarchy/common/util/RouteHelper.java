@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.runtime.parser.ParseException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -24,6 +25,7 @@ import dev.anarchy.common.DServiceChain;
 import dev.anarchy.common.DServiceDefinition;
 import dev.anarchy.translate.util.FileUtils;
 import dev.anarchy.translate.util.JSONUtils;
+import dev.anarchy.translate.util.ServiceChainHelper;
 import dev.anarchy.translate.util.TranslateMapService;
 import dev.anarchy.translate.util.TranslateType;
 import freemarker.template.TemplateException;
@@ -56,6 +58,19 @@ public class RouteHelper {
 		
 		destination.setSource(source.getDestination());
 		destination.setSourceId(source.getDestinationId());
+	}
+	
+	/**
+	 * Return a route element with the specified destination id.
+	 */
+	public static DRouteElementI getRoute(List<DRouteElementI> allRoutes, String destinationId) {
+		for (DRouteElementI element : allRoutes) {
+			if ( element.getDestinationId() != null && element.getDestinationId().equals(destinationId) ) {
+				return element;
+			}
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -142,9 +157,60 @@ public class RouteHelper {
             }
         }
 	}
+	
+	/**
+	 * Returns the specified service chain after unpacking conditions in to their own elements.
+	 */
+	public static DServiceChain unpack(DServiceChain serviceChain) {
+		double SPACING = 40;
+		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
+		DRouteElementI currentElement = serviceChain;
+		DRouteElementI prevElement = currentElement;
+		double yOff = 0;
+		while(currentElement != null) {
+			currentElement = RouteHelper.getLinkedTo(routes, currentElement);
+			if ( currentElement == null )
+				break;
+			
+			if (currentElement instanceof DServiceDefinition) {
+				if (!StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
+					DConditionElement condition = newCondition(serviceChain);
+					condition.setPosition(currentElement.getX(), currentElement.getY());
+					condition.setCondition(((DServiceDefinition) currentElement).getCondition());
+					
+					
+					RouteHelper.linkRoutes(serviceChain.getRoutesUnmodifyable(), prevElement, condition);
+					RouteHelper.linkRoutes(serviceChain.getRoutesUnmodifyable(), condition, (DRouteElement) currentElement);
+					
+					((DServiceDefinition) currentElement).setCondition(null);
+					yOff += condition.getHeight() + SPACING;
+				}
+			}
+
+			currentElement.setPosition(currentElement.getX(), currentElement.getY() + yOff);
+			prevElement = currentElement;
+		}
+		
+		return serviceChain;
+	}
+	
+	/**
+	 * Instantiate new condition node
+	 */
+	public static DConditionElement newCondition(DServiceChain serviceChain) {
+		DConditionElement condition = new DConditionElement();
+		condition.setName("Condition");
+		condition.setColor(ServiceChainHelper.getDefaultConditionColor());
+		condition.setSize(100, 100);
+		double x = ServiceChainHelper.getDefaultServiceDefinitionX();
+		double y = ServiceChainHelper.getDefaultServiceDefinitionY();
+		condition.setPosition(x, y);
+		serviceChain.addRoute(condition);
+		return condition;
+	}
 
 	/**
-	 * Pack condition nodes in to destination node
+	 * Pack condition nodes in to destination node. Returns a new Service Chain object.
 	 */
 	private static DServiceChain compact(DServiceChain serviceChain) {
 		List<DRouteElement> newRoutes = new ArrayList<DRouteElement>();
@@ -237,5 +303,25 @@ public class RouteHelper {
 		}
 		
 		return list;
+	}
+
+	public static DRouteElementI getNextRoute(List<DRouteElementI> routes, DRouteElementI currentElement) {
+		return getNextRoute(routes, currentElement, true);
+	}
+
+	public static DRouteElementI getNextRoute(List<DRouteElementI> routes, DRouteElementI currentElement, boolean passedCondition) {
+		if ( currentElement instanceof DConditionElement ) {
+			if ( !passedCondition ) {
+				return getRoute(routes, ((DConditionElement) currentElement).getFailDestinationId());
+			}
+		}
+		
+		if ( currentElement instanceof DServiceDefinition ) {
+			if ( !passedCondition ) {
+				return null; // TODO how to handle this??
+			}
+		}
+		
+		return getLinkedTo(routes, currentElement);
 	}
 }

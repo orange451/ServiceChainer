@@ -2,6 +2,7 @@ package dev.anarchy.translate.runner;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,21 +49,23 @@ public abstract class ServiceChainRunner {
 		
 		currentElement = this.serviceChain;
 		
+		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
+		
 		while(currentElement != null) {
 			
 			ServiceChainRunnerException exception = null;
+			boolean passedCondition = true;
 
 			// Transformations
 			Map<String, Object> output = inputPayload;
+			
 			try {
 				// Transform w/ template
 				if (currentElement instanceof DServiceDefinition)
 					output = transformSingle(currentElement, inputPayload, chainCanUseMocks);
 				
 				// Condition
-				if (currentElement instanceof DConditionElement)
-					if ( !new Condition(((DConditionElement)currentElement).getConditionMeta().getCondition()).evaluate(inputPayload))
-						return output;				
+				passedCondition = handleCondition(routes, inputPayload, currentElement);
 				
 				// Augment maybe
 				if ( currentElement instanceof DServiceDefinition && !StringUtils.isEmpty(((DServiceDefinition)currentElement).getAugmentPayload()) ) {
@@ -79,10 +82,24 @@ public abstract class ServiceChainRunner {
 				throw exception;
 			
 			// Move to next node
-			currentElement = RouteHelper.getLinkedTo(serviceChain.getRoutesUnmodifyable(), currentElement);
+			currentElement = RouteHelper.getNextRoute(routes, currentElement, passedCondition);
 		}
 		
 		return inputPayload;
+	}
+
+	protected boolean handleCondition(List<DRouteElementI> routes, Map<String, Object> inputPayload, DRouteElementI element) {
+		if (currentElement instanceof DConditionElement) {
+			Condition condition = new Condition(((DConditionElement)currentElement).getConditionMeta().getCondition());
+			return condition.evaluate(inputPayload);
+		}
+		
+		if ( currentElement instanceof DServiceDefinition && StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
+			Condition condition = new Condition(((DServiceDefinition)currentElement).getCondition());
+			return condition.evaluate(inputPayload);
+		}
+		
+		return true;
 	}
 
 	/**
