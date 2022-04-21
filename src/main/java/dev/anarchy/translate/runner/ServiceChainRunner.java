@@ -7,9 +7,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.runtime.parser.ParseException;
 
+import dev.anarchy.common.DConditionElement;
 import dev.anarchy.common.DRouteElementI;
 import dev.anarchy.common.DServiceChain;
 import dev.anarchy.common.DServiceDefinition;
+import dev.anarchy.common.condition.Condition;
 import dev.anarchy.common.util.RouteHelper;
 import dev.anarchy.translate.util.JSONUtils;
 import freemarker.template.TemplateException;
@@ -51,9 +53,16 @@ public abstract class ServiceChainRunner {
 			ServiceChainRunnerException exception = null;
 
 			// Transformations
-			Map<String, Object> output;
+			Map<String, Object> output = inputPayload;
 			try {
-				output = transformSingle(currentElement, inputPayload, chainCanUseMocks);
+				// Transform w/ template
+				if (currentElement instanceof DServiceDefinition)
+					output = transformSingle(currentElement, inputPayload, chainCanUseMocks);
+				
+				// Condition
+				if (currentElement instanceof DConditionElement)
+					if ( !new Condition(((DConditionElement)currentElement).getConditionMeta().getCondition()).evaluate(inputPayload))
+						return output;				
 				
 				// Augment maybe
 				if ( currentElement instanceof DServiceDefinition && !StringUtils.isEmpty(((DServiceDefinition)currentElement).getAugmentPayload()) ) {
