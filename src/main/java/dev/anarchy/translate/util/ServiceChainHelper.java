@@ -1,10 +1,12 @@
 package dev.anarchy.translate.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
 import dev.anarchy.common.DConditionElement;
+import dev.anarchy.common.DRouteElement;
 import dev.anarchy.common.DRouteElementI;
 import dev.anarchy.common.DServiceChain;
 import dev.anarchy.common.DServiceDefinition;
@@ -88,10 +90,118 @@ public class ServiceChainHelper {
 		condition.setSize(getDefaultConditionElementWidth(), getDefaultConditionElementHeight());
 		condition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
 	}
+	
+	/**
+	 * Returns the specified service chain after unpacking conditions in to their own elements.
+	 */
+	public static DServiceChain unpack(DServiceChain serviceChain) {
+		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
+		unpack(serviceChain, routes, serviceChain);
+		
+		return serviceChain;
+	}
+	
+	/**
+	 * Returns the specified service chain after unpacking conditions in to their own elements.
+	 */
+	private static void unpack(DServiceChain serviceChain, List<DRouteElementI> routes, DRouteElementI rootRoute) {
+		double SPACING = 40;
+		double yOff = 0;
+		
+		List<DRouteElementI> availableNextRoutes = RouteHelper.getLinkedTo(routes, rootRoute);
+		for (DRouteElementI currentElement : availableNextRoutes) {
+			
+			if (currentElement instanceof DServiceDefinition) {
+				if (!StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
+					DConditionElement condition = ServiceChainHelper.newCondition(serviceChain);
+					condition.setPosition(currentElement.getX(), currentElement.getY());
+					condition.setCondition(((DServiceDefinition) currentElement).getCondition());
+					
+					RouteHelper.linkRoutes(rootRoute, condition);
+					RouteHelper.linkRoutes(condition, (DRouteElement) currentElement);
+					
+					RouteHelper.connectCondition(condition, (DRouteElement) currentElement, true);
+					updateFailNode(routes, condition, rootRoute);
+					
+					((DServiceDefinition) currentElement).setCondition(null);
+					yOff += condition.getHeight() + SPACING;
+				} else {
+					DConditionElement condition = null;
+					for (DRouteElementI t : RouteHelper.getLinkedTo(serviceChain.getRoutesUnmodifyable(), rootRoute)) {
+						if ( t == currentElement ) 
+							continue;
+						
+						if ( t instanceof DConditionElement ) {
+							condition = (DConditionElement) t;
+							break;
+						}
+					}
+					if ( condition != null )
+						updateFailNode(routes, condition, rootRoute);
+				}
+			}
 
+			currentElement.setPosition(currentElement.getX(), currentElement.getY() + yOff);
+			
+			unpack(serviceChain, routes, currentElement);
+		}
+	}
+	
 
 	/**
-	 * Instantiate new condition node
+	 * Pack condition nodes in to destination node.
+	 */
+	public static void pack(DServiceChain serviceChain) {
+		List<DRouteElement> newRoutes = new ArrayList<DRouteElement>();
+		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
+		
+		pack(newRoutes, routes, serviceChain, serviceChain);
+		
+		serviceChain.setRoutes(newRoutes);
+	}
+
+	/**
+	 * Delete DConditionElement, and pack them in to child node
+	 */
+	public static void pack(List<DRouteElement> newRoutes, List<DRouteElementI> allRoutes, DRouteElementI currentRoute, DRouteElementI previousRoute) {
+		List<DRouteElementI> connectedRoutes = RouteHelper.getLinkedTo(allRoutes, currentRoute);
+		if ( currentRoute instanceof DConditionElement ) {
+			for (DRouteElementI nextRoute : connectedRoutes) {
+				RouteHelper.linkRoutes(previousRoute, (DRouteElement) nextRoute);
+				
+				// Mark the pass route condition
+				if ( nextRoute instanceof DServiceDefinition && nextRoute.getDestinationId().equals(((DConditionElement) currentRoute).getPassRouteId())) {
+					((DServiceDefinition)nextRoute).setCondition(((DConditionElement) currentRoute).getCondition());
+				}
+			}
+		} else {
+			if ( currentRoute instanceof DRouteElement )
+				newRoutes.add((DRouteElement) currentRoute);
+		}
+		
+		for (DRouteElementI element : connectedRoutes) {
+			if ( element instanceof DRouteElement )
+				pack(newRoutes, allRoutes, (DRouteElement) element, currentRoute);
+		}
+	}
+	
+	private static void updateFailNode(List<DRouteElementI> routes, DConditionElement condition, DRouteElementI rootRoute) {
+		for (DRouteElementI t : RouteHelper.getLinkedTo(routes, rootRoute)) {
+			if ( t instanceof DConditionElement ) {
+				continue;
+			}
+
+			condition.setFailRouteId(t.getDestinationId());
+			
+			if ( t instanceof DServiceDefinition ) {
+				((DServiceDefinition)t).setSource(condition.getDestination());
+				((DServiceDefinition)t).setSourceId(condition.getDestinationId());
+			}
+		}
+	}
+
+	/**
+	 * Instantiate new condition. Add it to the ServiceChain routes.
 	 */
 	public static DConditionElement newCondition(DServiceChain serviceChain) {
 		DConditionElement condition = new DConditionElement();
@@ -99,11 +209,22 @@ public class ServiceChainHelper {
 		serviceChain.addRoute(condition);
 		return condition;
 	}
+
+	/**
+	 * Instantiate new service definition. Add it to the ServiceChain routes.
+	 */
+	public static DServiceDefinition newServiceDefinition(DServiceChain serviceChain) {
+		DServiceDefinition sDef = new DServiceDefinition();
+		fixServiceDefinition(sDef);
+		serviceChain.addRoute(sDef);
+		return sDef;
+	}
 	
+	/**
+	 * Extra logic for when a service definition is saved. Currently unused.
+	 */
 	public static void saveServiceChain(DServiceChain serviceChain) {
-		for (DRouteElementI elements : serviceChain.getRoutesUnmodifyable()) {
-			//
-		}
+		//
 	}
 	
 	public static String getDefaultServiceChainColor() {

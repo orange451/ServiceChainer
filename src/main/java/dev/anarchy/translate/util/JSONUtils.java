@@ -3,7 +3,6 @@ package dev.anarchy.translate.util;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,7 +25,7 @@ public class JSONUtils {
 
 		objectMapper = new ObjectMapper();
 		prettyWriter = objectMapper.writer(prettyPrinter);
-		objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+		objectWriter = objectMapper.writer();
 	}
 	
 	/**
