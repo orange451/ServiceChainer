@@ -106,4 +106,22 @@ public class JSONUtils {
         }
         return jsonStr;
     }
+
+    /**
+     * Convenient method to turn an object into a pretty JSON string.
+     * @param o The object to convert to a JSON string
+     * @return The JSON string or null if the conversion failed
+     */
+    public static String objectToJSONPretty(Object o) {
+        String jsonStr = "";
+        if (o != null) {
+            try {
+                jsonStr = convertToJsonPretty(o);
+            } catch (Exception e) {
+            	e.printStackTrace();
+            }
+
+        }
+        return jsonStr;
+    }
 }
