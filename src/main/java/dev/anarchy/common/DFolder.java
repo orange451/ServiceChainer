@@ -125,23 +125,7 @@ public class DFolder implements DFolderElement {
 	public void delete() {
 		if ( !this.isDeletable() )
 			return;
-		
-		// We need to iterate this slightly oddly because otherwise we risk concurrent modification exception.
-		for (int i = this.children.size()-1; i >= 0; i--) {
-			if ( i >= this.children.size() )
-				continue;
-			
-			DFolderElement chain = this.children.get(i);
-			if ( chain == null )
-				continue;
-			
-			if ( chain instanceof DFolder && ((DFolder) chain).isDeletable() )
-				((DFolder)chain).delete();
-			
-			if ( chain instanceof DServiceChain )
-				((DServiceChain)chain).delete();
-		}
-		
+
 		DApp.get().delete(this);
 	}
 	
