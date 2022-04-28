@@ -53,8 +53,6 @@ public class DServiceDefinition extends DRouteElement implements DConditionMetaE
 	
 	public DServiceDefinition() {
 		super();
-		this.setDesination("ServiceDefinition");
-		
 		this.setPosition(ServiceChainHelper.getDefaultServiceDefinitionX(), ServiceChainHelper.getDefaultServiceDefinitionY());
 		this.setSize(ServiceChainHelper.getDefaultServiceDefinitionWidth(), ServiceChainHelper.getDefaultServiceDefinitionHeight());
 		this.setColor(ServiceChainHelper.getDefaultServiceDefinitionColor());

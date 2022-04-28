@@ -7,14 +7,14 @@ public class Base64Util {
 	 * Encode a string to Base64.
 	 */
 	public String encode(String src) {
-		return Base64.getEncoder().encodeToString(src.getBytes());
+		return encodeByteArray(src.getBytes());
 	}
 
 	/**
 	 * Decode a Base64 String in to a human-readable string.
 	 */
 	public String decode(String src) {
-		return new String(Base64.getDecoder().decode(src));
+		return new String(decodeByteArray(src.getBytes()));
 	}
 
 	/**

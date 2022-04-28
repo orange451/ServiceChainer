@@ -85,10 +85,11 @@ public class ServiceChainHelper {
 	}
 	
 	private static void fixCondition(DConditionElement condition) {
-		condition.setName("Condition");
 		condition.setColor(ServiceChainHelper.getDefaultConditionElementColor());
 		condition.setSize(getDefaultConditionElementWidth(), getDefaultConditionElementHeight());
 		condition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
+		if ( StringUtils.isEmpty(condition.getName()) )
+			condition.setName("Condition");
 	}
 	
 	/**
@@ -96,7 +97,7 @@ public class ServiceChainHelper {
 	 */
 	public static DServiceChain unpack(DServiceChain serviceChain) {
 		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
-		unpack(serviceChain, routes, serviceChain);
+		unpack(serviceChain, routes, serviceChain, 0);
 		
 		return serviceChain;
 	}
@@ -104,9 +105,8 @@ public class ServiceChainHelper {
 	/**
 	 * Returns the specified service chain after unpacking conditions in to their own elements.
 	 */
-	private static void unpack(DServiceChain serviceChain, List<DRouteElementI> routes, DRouteElementI rootRoute) {
+	private static void unpack(DServiceChain serviceChain, List<DRouteElementI> routes, DRouteElementI rootRoute, double yOff) {
 		double SPACING = 40;
-		double yOff = 0;
 		
 		List<DRouteElementI> availableNextRoutes = RouteHelper.getLinkedTo(routes, rootRoute);
 		for (DRouteElementI currentElement : availableNextRoutes) {
@@ -143,7 +143,7 @@ public class ServiceChainHelper {
 
 			currentElement.setPosition(currentElement.getX(), currentElement.getY() + yOff);
 			
-			unpack(serviceChain, routes, currentElement);
+			unpack(serviceChain, routes, currentElement, yOff);
 		}
 	}
 	
@@ -215,6 +215,7 @@ public class ServiceChainHelper {
 	 */
 	public static DServiceDefinition newServiceDefinition(DServiceChain serviceChain) {
 		DServiceDefinition sDef = new DServiceDefinition();
+		sDef.setDesination("ServiceDefinition");
 		fixServiceDefinition(sDef);
 		serviceChain.addRoute(sDef);
 		return sDef;
