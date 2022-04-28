@@ -44,7 +44,6 @@ public abstract class DRouteElement extends DGraphElement implements DRouteEleme
 	private String isSync;
 	
 	public DRouteElement() {
-		this.setDesination("RouteElement");
 		this.setDesinationId(UUID.randomUUID().toString());
 		this.setIsSync("true");
 		this.childRoutes = new ArrayList<>();

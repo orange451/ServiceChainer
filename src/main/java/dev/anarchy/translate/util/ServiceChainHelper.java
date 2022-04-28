@@ -80,6 +80,12 @@ public class ServiceChainHelper {
 		serviceDefinition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
 		serviceDefinition.setSize(getDefaultServiceDefinitionWidth(), getDefaultServiceDefinitionHeight());
 		serviceDefinition.setColor(getDefaultServiceDefinitionColor());
+		
+		System.out.println("Fixing Service definition: " + serviceDefinition + " :: " + serviceDefinition.getDestination() + " / " + serviceDefinition.getName());
+
+		if ( StringUtils.isEmpty(serviceDefinition.getDestination()) )
+			serviceDefinition.setDesination("ServiceDefinition");
+		
 		if ( StringUtils.isEmpty(serviceDefinition.getName()) )
 			serviceDefinition.setName(serviceDefinition.getDestination());
 	}
@@ -215,7 +221,6 @@ public class ServiceChainHelper {
 	 */
 	public static DServiceDefinition newServiceDefinition(DServiceChain serviceChain) {
 		DServiceDefinition sDef = new DServiceDefinition();
-		sDef.setDesination("ServiceDefinition");
 		fixServiceDefinition(sDef);
 		serviceChain.addRoute(sDef);
 		return sDef;
