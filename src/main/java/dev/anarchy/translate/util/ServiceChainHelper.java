@@ -77,11 +77,9 @@ public class ServiceChainHelper {
 	}
 
 	private static void fixServiceDefinition(DServiceDefinition serviceDefinition) {
-		serviceDefinition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
+		serviceDefinition.setPosition(round(getDefaultServiceDefinitionX()), round(getDefaultServiceDefinitionY()));
 		serviceDefinition.setSize(getDefaultServiceDefinitionWidth(), getDefaultServiceDefinitionHeight());
 		serviceDefinition.setColor(getDefaultServiceDefinitionColor());
-		
-		System.out.println("Fixing Service definition: " + serviceDefinition + " :: " + serviceDefinition.getDestination() + " / " + serviceDefinition.getName());
 
 		if ( StringUtils.isEmpty(serviceDefinition.getDestination()) )
 			serviceDefinition.setDesination("ServiceDefinition");
@@ -93,9 +91,13 @@ public class ServiceChainHelper {
 	private static void fixCondition(DConditionElement condition) {
 		condition.setColor(ServiceChainHelper.getDefaultConditionElementColor());
 		condition.setSize(getDefaultConditionElementWidth(), getDefaultConditionElementHeight());
-		condition.setPosition(getDefaultServiceDefinitionX(), getDefaultServiceDefinitionY());
+		condition.setPosition(round(getDefaultServiceDefinitionX()), round(getDefaultServiceDefinitionY()));
 		if ( StringUtils.isEmpty(condition.getName()) )
 			condition.setName("Condition");
+	}
+
+	public static double round(double x) {
+		return Math.floor(x / 20d) * 20d;
 	}
 	
 	/**
@@ -120,7 +122,7 @@ public class ServiceChainHelper {
 			if (currentElement instanceof DServiceDefinition) {
 				if (!StringUtils.isEmpty(((DServiceDefinition)currentElement).getCondition())) {
 					DConditionElement condition = ServiceChainHelper.newCondition(serviceChain);
-					condition.setPosition(currentElement.getX(), currentElement.getY());
+					condition.setPosition(round(currentElement.getX()), round(currentElement.getY()));
 					condition.setCondition(((DServiceDefinition) currentElement).getCondition());
 					
 					RouteHelper.linkRoutes(rootRoute, condition);
