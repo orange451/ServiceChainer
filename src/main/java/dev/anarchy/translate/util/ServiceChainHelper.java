@@ -69,7 +69,7 @@ public class ServiceChainHelper {
 		for (DRouteElementI element : childRoutes) {
 			double xx = centerX - (totalWidth/2) + pushWidth;
 			double yy = bottomY + VERTICAL_ELEMENT_SPACE;
-			element.setPosition(xx, yy);
+			element.setPosition(round(xx), round(yy));
 			
 			layout(routes, element);
 			pushWidth += element.getWidth() + HORIZONTAL_ELEMENT_SPACE;
