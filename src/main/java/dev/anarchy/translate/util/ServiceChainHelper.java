@@ -160,18 +160,30 @@ public class ServiceChainHelper {
 	 * Pack condition nodes in to destination node.
 	 */
 	public static void pack(DServiceChain serviceChain) {
-		List<DRouteElement> newRoutes = new ArrayList<DRouteElement>();
+		List<DRouteElementI> newRoutes = new ArrayList<DRouteElementI>();
 		List<DRouteElementI> routes = serviceChain.getRoutesUnmodifyable();
 		
+		// Pack routes in to newRoutes
 		pack(newRoutes, routes, serviceChain, serviceChain);
 		
-		serviceChain.setRoutes(newRoutes);
+		// Set routes in service chain
+		List<DRouteElement> tempRoutes = new ArrayList<DRouteElement>();
+		for (DRouteElementI element : newRoutes)
+			tempRoutes.add((DRouteElement) element);
+		serviceChain.setRoutes(tempRoutes);
+		
+		// Update source route condition as "Entry Condition" on service chain
+		DRouteElementI onSourceRoute = RouteHelper.getLinkedFrom(newRoutes, serviceChain);
+		if ( onSourceRoute != null && onSourceRoute instanceof DServiceDefinition && StringUtils.isEmpty(((DServiceDefinition)onSourceRoute).getCondition())) {
+			serviceChain.getRegisteredExtensionPoints().get(0).setEntryCondition(((DServiceDefinition)onSourceRoute).getCondition());
+			((DServiceDefinition)onSourceRoute).setCondition(null);
+		}
 	}
 
 	/**
 	 * Delete DConditionElement, and pack them in to child node
 	 */
-	public static void pack(List<DRouteElement> newRoutes, List<DRouteElementI> allRoutes, DRouteElementI currentRoute, DRouteElementI previousRoute) {
+	public static void pack(List<DRouteElementI> newRoutes, List<DRouteElementI> allRoutes, DRouteElementI currentRoute, DRouteElementI previousRoute) {
 		List<DRouteElementI> connectedRoutes = RouteHelper.getLinkedTo(allRoutes, currentRoute);
 		if ( currentRoute instanceof DConditionElement ) {
 			for (DRouteElementI nextRoute : connectedRoutes) {

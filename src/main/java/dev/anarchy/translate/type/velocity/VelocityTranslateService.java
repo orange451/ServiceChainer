@@ -92,12 +92,15 @@ public class VelocityTranslateService implements TranslateServiceInterface {
 	    context.put(Boolean.class.getSimpleName(), Boolean.class);
 	    context.put(Float.class.getSimpleName(), Float.class);
 	    context.put(Math.class.getSimpleName(), Math.class);
+	    
+	    ConversionTool conversionTool = new ConversionTool();
+	    DateTool dateTool = new ComparisonDateTool();
         
         // Velocity Tools
-        context.put(DateTool.class.getSimpleName(), new ComparisonDateTool());
-        context.put(ConversionTool.class.getSimpleName(), new ConversionTool());
-        context.put("date", new ComparisonDateTool());
-        context.put("convert", new ConversionTool());
+        context.put(DateTool.class.getSimpleName(), dateTool);
+        context.put(ConversionTool.class.getSimpleName(), conversionTool);
+        context.put("date", dateTool);
+        context.put("convert", conversionTool);
         context.put(StringUtils.class.getSimpleName(), new StringUtils());
         
         return context;
