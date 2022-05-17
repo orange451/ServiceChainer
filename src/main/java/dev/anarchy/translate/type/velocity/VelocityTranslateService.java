@@ -97,7 +97,7 @@ public class VelocityTranslateService implements TranslateServiceInterface {
         context.put(DateTool.class.getSimpleName(), new ComparisonDateTool());
         context.put(ConversionTool.class.getSimpleName(), new ConversionTool());
         context.put("date", new ComparisonDateTool());
-        context.put("conversion", new ConversionTool());
+        context.put("convert", new ConversionTool());
         context.put(StringUtils.class.getSimpleName(), new StringUtils());
         
         return context;
