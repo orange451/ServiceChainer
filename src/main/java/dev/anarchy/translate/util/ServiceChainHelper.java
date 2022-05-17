@@ -172,11 +172,22 @@ public class ServiceChainHelper {
 			tempRoutes.add((DRouteElement) element);
 		serviceChain.setRoutes(tempRoutes);
 		
+		// Get the source route
+		DServiceDefinition onSourceRoute = null;
+		for (DRouteElementI element : newRoutes) {
+			if ( element instanceof DServiceDefinition ) {
+				DServiceDefinition t = (DServiceDefinition)element;
+				if ( serviceChain.getDestinationId().equals(t.getSourceId())) {
+					onSourceRoute = t;
+					break;
+				}
+			}
+		}
+
 		// Update source route condition as "Entry Condition" on service chain
-		DRouteElementI onSourceRoute = RouteHelper.getLinkedFrom(newRoutes, serviceChain);
-		if ( onSourceRoute != null && onSourceRoute instanceof DServiceDefinition && StringUtils.isEmpty(((DServiceDefinition)onSourceRoute).getCondition())) {
-			serviceChain.getRegisteredExtensionPoints().get(0).setEntryCondition(((DServiceDefinition)onSourceRoute).getCondition());
-			((DServiceDefinition)onSourceRoute).setCondition(null);
+		if ( onSourceRoute != null && !StringUtils.isEmpty(onSourceRoute.getCondition())) {
+			serviceChain.getRegisteredExtensionPoints().get(0).setEntryCondition(onSourceRoute.getCondition());
+			onSourceRoute.setCondition(null);
 		}
 	}
 
