@@ -29,6 +29,9 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 
 	@JsonProperty("RegisteredExtensionPoints")
 	private List<DExtensionPoint> extensionPoints = new ArrayList<>();
+	
+	@JsonProperty("ComponentId")
+	private String componentId;
 
 	@JsonProperty("_Produces")
 	private String produces = "JSON";
@@ -99,6 +102,21 @@ public class DServiceChain implements DFolderElement,DRouteElementI {
 		
 		if ( onNameChangeEvent != null )
 			onNameChangeEvent.fire(name);
+		
+		this.onChangedEvent.fire();
+	}
+
+	@JsonIgnore
+	public String getComponentId() {
+		return this.componentId;
+	}
+
+	@JsonIgnore
+	public void setComponentId(String componentId) {
+		if ( StringUtils.equals(componentId, this.componentId) )
+			return;
+		
+		this.componentId = componentId;
 		
 		this.onChangedEvent.fire();
 	}
